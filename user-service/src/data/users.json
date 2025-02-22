@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "nombre": "Juan",
+    "apellido": "Perez",
+    "nick": "juanperez",
+    "email": "juan@example.com",
+    "contraseña": "password123"
+  },
+  {
+    "id": 1740216987970,
+    "nombre": "Maria",
+    "apellido": "Gomez",
+    "nick": "mariag",
+    "email": "maria@example.com",
+    "contraseña": "password123"
+  },
+  {
+    "id": 1740218612047,
+    "nombre": "Maria",
+    "apellido": "Gomez",
+    "nick": "mariagfds",
+    "email": "maria@examplee.com",
+    "contraseña": "password123"
+  }
+]
