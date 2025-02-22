@@ -1,11 +1,13 @@
 ﻿const express = require('express');
+const userRoutes = require('./src/routes/userRoutes');
+const db = require('./src/config/db');
+
+
 const app = express();
-const port = 3000;
+const PORT = 3001;
+app.use(express.json());
+app.use('/users', userRoutes);
 
-app.get('/', (req, res) => {
-  res.send('¡auth-service está funcionando!');
-});
-
-app.listen(port, () => {
-  console.log(`auth-service escuchando en http://localhost:${port}`);
+app.listen(PORT, () => {
+  console.log(`User Service running on port ${PORT}`);
 });
