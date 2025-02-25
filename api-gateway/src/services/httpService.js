@@ -1,7 +1,6 @@
 const axios = require('axios');
 
-const userServiceBaseUrl = 'http://localhost:3001/users';
-const authServiceBaseUrl = 'http://localhost:3002/auth';
+const { userServiceBaseUrl, authServiceBaseUrl, clubServiceBaseUrl } = require('../config/constants');
 
 const httpService = {
   post: async (url, data) => {
@@ -22,4 +21,4 @@ const httpService = {
   },
 };
 
-module.exports = { httpService, userServiceBaseUrl, authServiceBaseUrl };
+module.exports = { httpService, userServiceBaseUrl, authServiceBaseUrl, clubServiceBaseUrl  };

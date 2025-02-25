@@ -5,7 +5,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /login:
+ * /auth/login:
  *   post:
  *     summary: Iniciar sesión
  *     tags: [Auth]
