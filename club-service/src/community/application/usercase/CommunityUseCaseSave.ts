@@ -17,8 +17,7 @@ export default class CommunityUseCaseSave implements CommunityUseCaseSavePort{
         console.log('estamos en use case')
         console.log(name, description, image, privacy, creation_date, creator_id, community_rules);
         
-        
-
+       
         this.communityServiceSave.save({
             id: 0,
             name: name,

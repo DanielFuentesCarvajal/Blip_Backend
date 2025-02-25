@@ -7,11 +7,10 @@ export default class CommunityServiceSave implements CommunityServiceSavePort{
 
     constructor(private readonly SQLCommunity: ICommunityRepository){}
 
-    public save = async (communitySave: CommunityDataInterface): Promise<void> => {
-
-        console.log('estamos en serive')
-        console.log(communitySave);
-        this.SQLCommunity.save(communitySave)
-    }
+public save = async (communitySave: CommunityDataInterface): Promise<void> => {
+    console.log('estamos en serive')
+    console.log(communitySave);
+    this.SQLCommunity.save(communitySave);
+}
 
 }

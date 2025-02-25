@@ -28,9 +28,8 @@ export default class CommunityController implements CommunityControllerExpressPo
     public async save(_req: Request, res: Response): Promise<void> {
        
         const { name, descripcion, image, privacidad, creation_date, creator_user, rules } = _req.body;
-        
-
-        await this.communityUseCaseSave.save(name, descripcion, image, privacidad, creation_date, creator_user, rules);
+                // Llamamos al caso de uso para guardar la comunidad
+      await this.communityUseCaseSave.save(name, descripcion, image, privacidad, creation_date, creator_user, rules);
         res.status(200).json({ message: 'Community created successfully' });
     
     }
