@@ -22,5 +22,13 @@
     "nick": "mariagfds",
     "email": "maria@examplee.com",
     "contraseña": "password123"
+  },
+  {
+    "id": 1740220049075,
+    "nombre": "Maria",
+    "apellido": "Gomez",
+    "nick": "mariadsg",
+    "email": "maria@exampeele.com",
+    "contraseña": "password123"
   }
 ]
