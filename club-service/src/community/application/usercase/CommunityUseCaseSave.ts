@@ -14,10 +14,10 @@ export default class CommunityUseCaseSave implements CommunityUseCaseSavePort{
         creator_id: number,
         community_rules: string
     ): Promise<void> => {
+        console.log('estamos en use case')
         console.log(name, description, image, privacy, creation_date, creator_id, community_rules);
         
-        if(image != null) return;
-
+       
         this.communityServiceSave.save({
             id: 0,
             name: name,

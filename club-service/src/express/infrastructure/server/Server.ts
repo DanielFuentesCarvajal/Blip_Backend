@@ -30,6 +30,7 @@ export default class Server {
   }
 
   public start = (): void => {
+
     const PORT = process.env['PORT'] ?? 3003
     const HOST = process.env['HOST'] ?? 'localhost'
     this.app.listen(PORT, () => {
