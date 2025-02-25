@@ -1,20 +1,36 @@
-const { readUsers, writeUsers } = require('../config/db');
+const { readUsers, writeUser } = require('../config/db');
 
-const createUser = (user) => {  // REMPLAZAR POR INSERCION EN BASE DE DATOS
-  const users = readUsers();
-  users.push(user);
-  writeUsers(users);
-  return user;
+// Crear usuario
+const createUser = async (user) => {
+  try {
+    const result = await writeUser(user);
+    console.log('Resultado de la inserción:', result);
+    return result;
+  } catch (err) {
+    throw new Error('Error al crear usuario: ' + err.message);
+  }
 };
 
-const getUserByEmail = (email) => { //REEMPLAZAR POR CONSULTA EN BASE DE DATOS
-  const users = readUsers();
-  return users.find(user => user.email === email);
+// Obtener usuario por correo
+const getUserByEmail = async (email) => {
+  try {
+    const users = await readUsers();
+    console.log('Usuarios obtenidos por email:', users);
+    return users.find(user => user.mail === email);
+  } catch (err) {
+    throw new Error('Error al obtener usuario por email: ' + err.message);
+  }
 };
 
-const getUserByNick = (nick) => { //REEMPLAZAR POR CONSULTA EN BASE DE DATOS
-  const users = readUsers();
-  return users.find(user => user.nick === nick);
+// Obtener usuario por nickname
+const getUserByNick = async (nick) => {
+  try {
+    const users = await readUsers();
+    console.log('Usuarios obtenidos por nickname:', users);
+    return users.find(user => user.nickname === nick);
+  } catch (err) {
+    throw new Error('Error al obtener usuario por nickname: ' + err.message);
+  }
 };
 
 module.exports = { createUser, getUserByEmail, getUserByNick };
