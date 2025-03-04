@@ -5,6 +5,17 @@ const registerUser = async (req, res) => {
   const { nombre, apellido, nick, email, contraseña } = req.body;
 
   try {
+    // Validar que ningún campo esté vacío o sea nulo
+    if (!nombre || !apellido || !nick || !email || !contraseña) {
+      return res.status(400).json({ message: 'Todos los campos son obligatorios' });
+    }
+
+    // Validar formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: 'El formato del email no es válido' });
+    }
+
     // Verificar si el email ya está registrado
     const existingUserByEmail = await getUserByEmail(email);
     if (existingUserByEmail) {
@@ -42,6 +53,11 @@ const loginUser = async (req, res) => {
   const { email, contraseña } = req.body;
 
   try {
+    // Validar que ningún campo esté vacío o sea nulo
+    if (!email || !contraseña) {
+      return res.status(400).json({ message: 'Todos los campos son obligatorios' });
+    }
+
     // Buscar el usuario por email
     const user = await getUserByEmail(email);
     console.log('Usuario encontrado por email:', user);

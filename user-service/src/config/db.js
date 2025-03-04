@@ -26,6 +26,18 @@ const readUsers = async () => {
 const writeUser = async (user) => {
   try {
     const { names, lastname, nickname, mail, password } = user;
+
+    // Validar que ningún campo esté vacío o sea nulo
+    if (!names || !lastname || !nickname || !mail || !password) {
+      throw new Error('Todos los campos son obligatorios');
+    }
+
+    // Validar formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(mail)) {
+      throw new Error('El formato del email no es válido');
+    }
+
     const query = `
       INSERT INTO users (names, lastname, nickname, mail, password)
       VALUES (?, ?, ?, ?, ?)
