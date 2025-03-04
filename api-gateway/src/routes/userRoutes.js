@@ -46,10 +46,10 @@ const router = express.Router();
  *               type: object
  *               properties:
  *                 userId:
- *                   type: integer
- *                   description: ID del usuario registrado
+ *                   type: String
+ *                   description: Token JWT generado
  *             example:
- *               userId: 1740216987971
+ *               token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
  *       400:
  *         description: Error en la solicitud (email o nick duplicado)
  *         content:

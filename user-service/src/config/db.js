@@ -3,11 +3,10 @@ const mysql = require('mysql2');
 // Configuración de la base de datos
 const dbConfig = {
   host: 'sql10.freesqldatabase.com',
-  user: 'sql10764568',
-  password: '6TYWGGJi7d',
-  database: 'sql10764568',
+  user: 'sql10765905',
+  password: 'WghJVkdMjK',
+  database: 'sql10765905',  
 };
-
 // Crear una conexión en pool para manejar múltiples consultas de forma eficiente
 const pool = mysql.createPool(dbConfig);
 const promisePool = pool.promise(); // Usar promesas para un manejo más limpio
