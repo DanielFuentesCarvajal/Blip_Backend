@@ -4,5 +4,4 @@ export default interface Repository<E, T> {
   save: (item: T) => void
   update: (id: E, item: T) => Promise<void>
   delete: (id: E) => Promise<boolean>
-  
 }

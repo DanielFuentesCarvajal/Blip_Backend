@@ -1,9 +1,8 @@
 import Category from "../category/Category";
-import CreatorUser from "../creator/Creator";
-import Rules from "../rules/Rules";
 import Tags from "../tags/Tags";
 
 export default abstract class abstractCommunity {
+    public id : number
     public name: string
     public description: string
     public image: string
@@ -11,13 +10,14 @@ export default abstract class abstractCommunity {
     public privacy: string
     public creation_date: string
     public list_members: string[]
-    public creator: CreatorUser
+    public creator: number;
     public category: Category
     public tags: Tags[]
-    public rules: Rules[]
+    public rules: string
 
 
     constructor(communityAttributes: CommunityAttributes) {
+        this.id = communityAttributes.id
         this.name = communityAttributes.name;
         this.description = communityAttributes.description;
         this.image = communityAttributes.image;
@@ -35,6 +35,7 @@ export default abstract class abstractCommunity {
 }
 
 export interface CommunityAttributes {
+     id : number,
      name: string,
      description: string,
      image: string,
@@ -42,8 +43,8 @@ export interface CommunityAttributes {
      privacy: string,
      creation_date: string,
      list_members: string[],
-     creator: CreatorUser,
+     creator: number,
      category: Category,
      tags: Tags[],
-     rules: Rules[]
+     rules: string
 }

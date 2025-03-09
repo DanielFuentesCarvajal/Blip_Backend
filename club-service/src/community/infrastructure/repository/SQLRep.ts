@@ -2,11 +2,13 @@ import { connectToDatabase } from './conectdb';
 
 export default class SQLRep {
     
-    private readonly queryGetComunidades = 'SELECT * FROM community';
+    private readonly queryGetComunidades = 'SELECT * FROM ClubView';
     private readonly queryInsertComunidad = 'CALL InsertCommunity(?, ?, ?, ?, ?, ?, ?)';
     private readonly queryDeleteComunidad = 'CALL DeleteComunidad(?)';
     private readonly queryUpdateComunidad = 'CALL UpdateComunidad(?, ?, ?, ?, ?)';
-    private readonly queryGetComunidadById = 'SELECT * FROM comunidades WHERE idcomunidad = ?';
+    private readonly queryGetComunidadById = 'CALL GetCommunityById(?);';
+    private readonly queryGetTagsById = 'CALL GetCommunityTags(?);'
+
 
     constructor() {}
 
@@ -70,6 +72,9 @@ export default class SQLRep {
         const conectionDB = await connectToDatabase();
         const [rows] = await conectionDB.execute(this.queryGetComunidadById, [id]) as any[];
 
+        console.log('Comunidad con id obtenida exitosamente');
+        console.log(rows)
+
         if (rows.length > 0) {
             console.log('Comunidad encontrada:', rows[0]);
             return rows[0];
@@ -78,4 +83,13 @@ export default class SQLRep {
             return null;
         }
     }
+
+    public getTagsById = async (id: number) => {
+        const conectionDB = await connectToDatabase();
+        const [rows] = await conectionDB.execute(this.queryGetTagsById, [id]) as any[]; 
+        return rows;
+    }
+
+    
+
 }

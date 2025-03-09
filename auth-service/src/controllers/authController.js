@@ -1,6 +1,8 @@
 const { generateToken } = require('../config/jwt');
 
 const generateTokenController = async (req, res) => {
+  console.log('mmmm')
+
   const { userId, email } = req.body;
 
   try {

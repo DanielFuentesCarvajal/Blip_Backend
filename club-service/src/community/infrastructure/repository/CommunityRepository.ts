@@ -12,32 +12,44 @@ export default class CommunityRepository implements ICommunityRepository {
 
     findAll = async (): Promise<CommunityDataInterface[]> => {
         const comunidadesFromDB = await this.sqlRep.findAll();
-        console.log(comunidadesFromDB)
         return comunidadesFromDB.map((comunidad: any) => ({
-            id: comunidad.idCommunity,
+            community_id: comunidad.community_id,
             name: comunidad.name, 
-            description: comunidad.descripcion, 
-            members_number: comunidad.number_members, 
-            privacy: comunidad.privacidad,
+            description: comunidad.description, 
+            members_number: comunidad.memberCount, 
+            privacy: comunidad.visibility,
             creation_date: comunidad.creation_date, // Fecha de creación
-            creator_id: comunidad.creator_id, // ID del creador
-            community_rules: comunidad.community_rules // Reglas de la comunidad
+            creator_id: comunidad.owner, // ID del creador
+            community_rules: comunidad.rules, // Reglas de la comunidad
+            category: comunidad.category_name,
+            image: comunidad.image
         }));
     }
+
     
 
-    findById = (id: string): Promise<CommunityDataInterface> => {
-        const communityFromDB = this.sqlRep.getComunidadById(parseFloat(id))   
-        return communityFromDB
+    findById = async (id: string): Promise<CommunityDataInterface> => {
+        const communityFromDB = await this.sqlRep.getComunidadById(parseFloat(id))
+        const communityR = {
+            community_id: communityFromDB[0].community_id,
+            name: communityFromDB[0].name, 
+            description: communityFromDB[0].description, 
+            members_number: communityFromDB[0].memberCount, 
+            privacy: communityFromDB[0].visibility,
+            creation_date: communityFromDB[0].creation_date, // Fecha de creación
+            creator_id: communityFromDB[0].owner, // ID del creador
+            community_rules: communityFromDB[0].rules, // Reglas de la comunidad
+            category: communityFromDB[0].category_name,
+            image: communityFromDB[0].image
+        }
+        return communityR
     }
 
     save = (item: CommunityDataInterface): void => {
-        this.sqlRep.save(item.name, item.description, item.image, item.privacy, item.creation_date, item.creator_id, item.community_rules)
-        
+        this.sqlRep.save(item.name, item.description, item.image, item.privacy, item.creation_date, item.creator_id, item.community_rules)    
     }
 
     
-
     update = async (id: string, item: CommunityDataInterface): Promise<void> => {
         if(!item.name || !item.description || !item.creation_date || !item.creator_id) return
         this.sqlRep.update(parseFloat(id), item.name, item.description , item.creation_date, item.creator_id)
@@ -50,5 +62,7 @@ export default class CommunityRepository implements ICommunityRepository {
         this.sqlRep.deleteById(parseFloat(id))
         return true // falta implementar si si está la cita borrar
     }
+
+    
 
 }
