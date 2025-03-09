@@ -1,36 +1,35 @@
-const { readUsers, writeUser } = require('../config/db');
-
-// Crear usuario
-const createUser = async (user) => {
-  try {
-    const result = await writeUser(user);
-    console.log('Resultado de la inserción:', result);
-    return result;
-  } catch (err) {
-    throw new Error('Error al crear usuario: ' + err.message);
+class User {
+  constructor({ id, names, lastname, nickname, mail, password }) {
+    this.id = id;
+    this.names = names;
+    this.lastname = lastname;
+    this.nickname = nickname;
+    this.mail = mail;
+    this.password = password;
   }
-};
 
-// Obtener usuario por correo
-const getUserByEmail = async (email) => {
-  try {
-    const users = await readUsers();
-    console.log('Usuarios obtenidos por email:', users);
-    return users.find(user => user.mail === email);
-  } catch (err) {
-    throw new Error('Error al obtener usuario por email: ' + err.message);
+  validate() {
+    if (!this.names || !this.lastname || !this.nickname || !this.mail || !this.password) {
+      throw new Error('Todos los campos son obligatorios');
+    }
+
+    // Validar formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.mail)) {
+      throw new Error('El formato del email no es válido');
+    }
   }
-};
 
-// Obtener usuario por nickname
-const getUserByNick = async (nick) => {
-  try {
-    const users = await readUsers();
-    console.log('Usuarios obtenidos por nickname:', users);
-    return users.find(user => user.nickname === nick);
-  } catch (err) {
-    throw new Error('Error al obtener usuario por nickname: ' + err.message);
+  // Método para crear un objeto plano
+  toJSON() {
+    return {
+      names: this.names,
+      lastname: this.lastname,
+      nickname: this.nickname,
+      mail: this.mail,
+      password: this.password,
+    };
   }
-};
+}
 
-module.exports = { createUser, getUserByEmail, getUserByNick };
+module.exports = User;
