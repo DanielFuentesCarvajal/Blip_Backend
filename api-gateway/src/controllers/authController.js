@@ -1,6 +1,8 @@
 const { httpService, userServiceBaseUrl, authServiceBaseUrl } = require('../services/httpService');
 
 const loginUser = async (req, res) => {
+
+  console.log('llega acá')
   try {
     // 1. Enviar los datos al user-service para verificar las credenciales
     const userResponse = await httpService.post(`${userServiceBaseUrl}/login`, req.body);
