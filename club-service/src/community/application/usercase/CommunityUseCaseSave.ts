@@ -19,15 +19,16 @@ export default class CommunityUseCaseSave implements CommunityUseCaseSavePort{
         
        
         this.communityServiceSave.save({
-            id: 0,
-            name: name,
-            description: description, 
-            image: image,
+            community_id: 0, // ID de la comunidad
+            name: name, // Nombre de la comunidad
+            description: description, // Descripción
+            image: image, //
             members_number: 0, // Número de miembros
-            privacy: privacy,// Estado de la comunidad (PUBLICO, PRIVADO)
+            category: '', // Nombre de categoría
+            privacy: privacy, // Estado de la comunidad (PUBLICO, PRIVADO)
             creation_date: creation_date, // Fecha de creación
-            creator_id: creator_id,// ID del creador
-            community_rules: community_rules    
+            creator_id: creator_id, // ID del creador
+            community_rules: community_rules
         });
     };
 

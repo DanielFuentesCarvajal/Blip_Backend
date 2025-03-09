@@ -16,5 +16,10 @@ export default class implements CommunityUseCaseGetExpressPort {
         }
         return [new NullCommunity()]
     }
+
+    public getCommunityById = async (id: string): Promise<Community> => {
+        const communityData = await this.communityGetServicePort.getCommunityById(id);
+        return communityData;   
+    }
 }
 

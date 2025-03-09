@@ -12,6 +12,7 @@ export default class CommunityRouterExpress extends RouterExpress implements Com
     public routes = (): void => {
         this.getAllCommunity()
         this.save();
+        this.getCommunityById();
 
     }
 
@@ -29,6 +30,12 @@ export default class CommunityRouterExpress extends RouterExpress implements Com
           )
     }
 
+    public getCommunityById(): void {
+        this.router.get(
+            '/v1.0/community/:id',
+            this.communityController.getCommunityById.bind(this.communityController)
+        )
+    }
     
 }
  

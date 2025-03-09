@@ -1,12 +1,11 @@
 import NullCategory from "../category/NullCategory";
-import NullCreatorUser from "../creator/NullCreator";
-import NullRule from "../rules/NullRules";
 import NullTag from "../tags/NullTags";
 import abstractCommunity from "./AbstractCommunity";
 
 export default class NullCommunity extends abstractCommunity {
     constructor() {
         super({
+            id : 0,
             name: 'Unknown',
             description: 'No description',
             image: 'no-image.png',
@@ -14,10 +13,10 @@ export default class NullCommunity extends abstractCommunity {
             privacy: 'private',
             creation_date: '01/01/2001',
             list_members: [],
-            creator: new NullCreatorUser(),
+            creator: 0,
             category: new NullCategory(),
             tags: [new NullTag()],
-            rules: [new NullRule()]
+            rules: 'NN'
             }
         );
     }
