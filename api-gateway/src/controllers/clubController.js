@@ -1,32 +1,70 @@
 const { httpService, clubServiceBaseUrl } = require('../services/httpService');
+const axios = require('axios');
 
 const getAllCommunity = async (req, res) => {
     try {
-        const communities = await httpService.get(`${clubServiceBaseUrl}/v1.0/community/communitys`);
-        res.status(200).json(communities);
+        const url = `${clubServiceBaseUrl}/communitys`; // Construcción correcta de la URL
+        console.log("➡️ Haciendo solicitud a:", url); // LOG para depuración
+
+        // Realiza la solicitud al servicio de comunidades
+        const response = await axios.get(url, {
+            headers: {
+                Authorization: req.headers['authorization'], // Enviar el token de autenticación
+            }
+        });
+
+        // Devuelve la respuesta con la lista de comunidades
+        res.status(200).json(response.data);
     } catch (error) {
-        res.status(500).json({ message: 'Error al obtener comunidades', error });
+        console.error("Error al obtener las comunidades:", error);
+        res.status(500).json({ 
+            message: 'Error al obtener comunidades', 
+            error: error.message 
+        });
     }
 };
 
 const createClub = async (req, res) => {
     try {
-        const creatorUser = req.userId; // Extraer el userId del token
-        const clubData = { ...req.body, creator_user: creatorUser };
-        const targetUrl = `${clubServiceBaseUrl}/v1.0/community/save`;
+        // Si `authMiddleware` pasó, req.userId siempre estará definido
+        req.body.creator_user = req.userId; 
 
-        // 🔍 LOGS para depurar antes de hacer la solicitud
-        console.log("➡️ Enviando solicitud a:", targetUrl);
-        console.log("📦 Datos enviados:", JSON.stringify(clubData, null, 2));
+        console.log("Token verificado, ID recibida:", req.body.creator_user);
+        console.log("Datos de la solicitud al backend:", JSON.stringify(req.body, null, 2));
 
-        const newClub = await httpService.post(targetUrl, clubData);
+        // Realiza la petición al microservicio de comunidades
+        const response = await axios.post(`${clubServiceBaseUrl}/save`, req.body, {
+            headers: { Authorization: req.headers['authorization'] }
+        });
 
-        // Si llega aquí, la solicitud fue exitosa
-        console.log("✅ Respuesta del servicio de clubes:", newClub);
-
-        res.status(201).json(newClub);
+        return res.status(201).json({ message: "Comunidad creada exitosamente", data: response.data });
     } catch (error) {
-        console.error("❌ Error al crear la comunidad:", error.response?.data || error.message);
-        res.status(500).json({ message: 'Error al crear la comunidad', error });
+        console.error("Error al crear la comunidad:", error.response?.data || error.message);
+        return res.status(error.response?.status || 500).json({ message: "Error al crear la comunidad" });
     }
 };
+const getCommunityById = async (req, res) => {
+    try {
+        const { id } = req.params; // Obtener el ID de la comunidad desde los parámetros de la URL
+        const url = `${clubServiceBaseUrl}/${id}`; // Construir la URL para obtener la comunidad por ID
+        console.log("➡️ Haciendo solicitud a:", url); // LOG para depuración
+
+        // Realiza la solicitud al servicio de comunidades
+        const response = await axios.get(url, {
+            headers: {
+                Authorization: req.headers['authorization'], // Enviar el token de autenticación
+            }
+        });
+
+        // Devuelve la respuesta con los datos de la comunidad
+        res.status(200).json(response.data);
+    } catch (error) {
+        console.error("Error al obtener la comunidad por ID:", error);
+        res.status(500).json({ 
+            message: 'Error al obtener la comunidad por ID', 
+            error: error.message 
+        });
+    }
+};
+
+module.exports = { getAllCommunity, createClub, getCommunityById };

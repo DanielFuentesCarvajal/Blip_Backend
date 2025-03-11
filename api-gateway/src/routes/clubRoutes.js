@@ -2,10 +2,10 @@ const express = require('express');
 const authMiddleware = require('../middlewares/authMiddleware');
 const axios = require('axios');
 const router = express.Router(); // Aquí se define el router correctamente
-
+const { getAllCommunity, createClub, getCommunityById} = require('../controllers/clubController');
 const CLUB_SERVICE_BASE_URL = 'http://localhost:3003/v1.0/community'; // Base URL para los servicios de comunidad
 
-  /**
+/**
  * @swagger
  * /club/clubs:
  *   get:
@@ -29,19 +29,40 @@ const CLUB_SERVICE_BASE_URL = 'http://localhost:3003/v1.0/community'; // Base UR
  *                   name:
  *                     type: string
  *                     description: Nombre de la comunidad
- *                   descripcion:
+ *                   description:
  *                     type: string
  *                     description: Descripción de la comunidad
  *                   image:
  *                     type: string
- *                     description: URL de la imagen de la comunidad
- *                   privacidad:
+ *                     description: Nombre del archivo de la imagen de la comunidad
+ *                   privacy:
  *                     type: string
- *                     description: Tipo de privacidad de la comunidad (Ej. PUBLICO)
- *                   creation_date:
+ *                     enum: [PUBLICO, PRIVADO]
+ *                     description: Tipo de privacidad de la comunidad
+ *                   category:
  *                     type: string
- *                     format: date
- *                     description: Fecha de creación de la comunidad
+ *                     description: Categoría de la comunidad
+ *                   rules:
+ *                     type: string
+ *                     description: Reglas de la comunidad
+ *                   owner:
+ *                     type: integer
+ *                     description: ID del usuario propietario de la comunidad
+ *                   members_number:
+ *                     type: integer
+ *                     description: Número de miembros en la comunidad
+ *                   tags:
+ *                     type: array
+ *                     description: Lista de etiquetas asociadas a la comunidad
+ *                     items:
+ *                       type: object
+ *                       properties:
+ *                         idTag:
+ *                           type: string
+ *                           description: ID de la etiqueta
+ *                         name:
+ *                           type: string
+ *                           description: Nombre de la etiqueta
  *       401:
  *         description: Token no válido o no autorizado
  *         content:
@@ -65,23 +86,8 @@ const CLUB_SERVICE_BASE_URL = 'http://localhost:3003/v1.0/community'; // Base UR
  *             example:
  *               message: "Error al obtener comunidades"
  */
-router.get('/clubs', authMiddleware, async (req, res) => {
-    try {
-        const url = `${CLUB_SERVICE_BASE_URL}/communitys`;
-        // Realiza la solicitud a la API de servicios de comunidades
-        const response = await axios.get(url , {
-            headers: {
-                Authorization: req.headers['authorization'], // Enviar el token al backend
-            }
-        });
+router.get('/clubs', authMiddleware, getAllCommunity);
 
-        // Responde con la lista de comunidades obtenida
-        res.status(200).json(response.data);
-    } catch (error) {
-        console.error("Error al obtener las comunidades:", error);
-        res.status(500).json({ message: 'Error al obtener comunidades', error: error.message });
-    }
-});
 /**
  * @swagger
  * /club/create:
@@ -158,33 +164,108 @@ router.get('/clubs', authMiddleware, async (req, res) => {
  *             example:
  *               message: "Error al crear la comunidad"
  */
-router.post('/create', authMiddleware, async (req, res) => {
-    if (!req.userId) {
-        return res.status(401).json({ message: 'Acceso denegado. Usuario no identificado.' });
-    }
-
-    // Agregar el creator_id al cuerpo de la solicitud
-    req.body.creator_user = req.userId; // Agregar creator_user desde el token
-
-    // Logs para depurar
-    console.log("Token verificado, ID recibida:", req.body.creator_user);
-    console.log("Datos de la solicitud al backend:", JSON.stringify(req.body, null, 2)); // Log detallado
-
-    try {
-        // Realizamos la solicitud al servicio de crear comunidad
-        const url = `${CLUB_SERVICE_BASE_URL}/save`;
-        const response = await axios.post(url, req.body, {
-            headers: {
-                Authorization: req.headers['authorization'], // Pasar el token de autorización
-            }
-        });
-        res.status(201).json({ message: "Comunidad creada exitosamente" });
-    } catch (error) {
-        console.error("Error al crear la comunidad:", error);
-        res.status(500).json({ message: "Error al crear la comunidad" });
-    }
-});
+router.post('/create', authMiddleware, createClub);
 
 
+
+
+/**
+ * @swagger
+ * /club/{id}:
+ *   get:
+ *     summary: Obtener una comunidad por su ID
+ *     tags: [Clubs]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID de la comunidad
+ *     responses:
+ *       200:
+ *         description: Comunidad obtenida exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   description: ID de la comunidad
+ *                 name:
+ *                   type: string
+ *                   description: Nombre de la comunidad
+ *                 description:
+ *                   type: string
+ *                   description: Descripción de la comunidad
+ *                 image:
+ *                   type: string
+ *                   description: Nombre del archivo de la imagen de la comunidad
+ *                 privacy:
+ *                   type: string
+ *                   enum: [PUBLICO, PRIVADO]
+ *                   description: Tipo de privacidad de la comunidad
+ *                 category:
+ *                   type: string
+ *                   description: Categoría de la comunidad
+ *                 rules:
+ *                   type: string
+ *                   description: Reglas de la comunidad
+ *                 owner:
+ *                   type: integer
+ *                   description: ID del usuario propietario de la comunidad
+ *                 members_number:
+ *                   type: integer
+ *                   description: Número de miembros en la comunidad
+ *                 tags:
+ *                   type: array
+ *                   description: Lista de etiquetas asociadas a la comunidad
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       idTag:
+ *                         type: string
+ *                         description: ID de la etiqueta
+ *                       name:
+ *                         type: string
+ *                         description: Nombre de la etiqueta
+ *       401:
+ *         description: Token no válido o no autorizado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *             example:
+ *               message: "Acceso no autorizado"
+ *       404:
+ *         description: Comunidad no encontrada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *             example:
+ *               message: "Comunidad no encontrada"
+ *       500:
+ *         description: Error al obtener la comunidad
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *             example:
+ *               message: "Error al obtener la comunidad"
+ */
+router.get('/:id', authMiddleware, getCommunityById);
   
 module.exports = router;
