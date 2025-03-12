@@ -108,13 +108,14 @@ router.get('/clubs', authMiddleware, getAllCommunity);
  *                 description: Nombre de la comunidad
  *               descripcion:
  *                 type: string
- *                 description: Descripción de la comunidad (opcional)
+ *                 description: Descripción de la comunidad
  *               image:
  *                 type: string
+ *                 nullable: true
  *                 description: URL de la imagen de la comunidad
- *               privacidad:
+ *               privacy:
  *                 type: string
- *                 description: Privacidad de la comunidad (Ej. PUBLICO)
+ *                 description: Privacidad de la comunidad (Ej. PUBLICO, PRIVADO)
  *               creation_date:
  *                 type: string
  *                 format: date
@@ -122,13 +123,23 @@ router.get('/clubs', authMiddleware, getAllCommunity);
  *               rules:
  *                 type: string
  *                 description: Reglas de la comunidad
+ *               category:
+ *                 type: string
+ *                 description: ID de la categoría a la que pertenece la comunidad
+ *               tags:
+ *                 type: array
+ *                 items:
+ *                   type: integer
+ *                 description: Lista de IDs de etiquetas asociadas a la comunidad
  *             example:
- *               name: "Comunidad de Música"
- *               descripcion: "Descripción opcional"
+ *               name: "Tech Enthusiasts"
+ *               descripcion: "Comunidad de tecnología"
  *               image: "https://example.com/image.png"
- *               privacidad: "PUBLICO"
- *               creation_date: "2023-10-01"
- *               rules: "Reglas de la comunidad"
+ *               privacy: "PUBLICO"
+ *               creation_date: "2025-03-12"
+ *               rules: "Reglas de respeto y buen comportamiento"
+ *               category: "1"
+ *               tags: [1, 2, 3]
  *     responses:
  *       201:
  *         description: Comunidad creada exitosamente
@@ -141,6 +152,17 @@ router.get('/clubs', authMiddleware, getAllCommunity);
  *                   type: string
  *             example:
  *               message: "Comunidad creada exitosamente"
+ *       400:
+ *         description: Datos de entrada inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *             example:
+ *               message: "Faltan campos requeridos"
  *       401:
  *         description: Usuario no identificado o token no válido
  *         content:
@@ -165,6 +187,8 @@ router.get('/clubs', authMiddleware, getAllCommunity);
  *               message: "Error al crear la comunidad"
  */
 router.post('/create', authMiddleware, createClub);
+
+
 
 
 
