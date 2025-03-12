@@ -3,12 +3,14 @@ import { connectToDatabase } from './conectdb';
 export default class SQLRep {
     
     private readonly queryGetComunidades = 'SELECT * FROM ClubView';
-    private readonly queryInsertComunidad = 'CALL InsertCommunity(?, ?, ?, ?, ?, ?, ?)';
+
+    private readonly queryInsertComunidad = 'CALL InsertCommunity(?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    private readonly queryInsertCommunityTag = 'CALL InsertCommunityTag(?, ?)';
+
     private readonly queryDeleteComunidad = 'CALL DeleteComunidad(?)';
     private readonly queryUpdateComunidad = 'CALL UpdateComunidad(?, ?, ?, ?, ?)';
     private readonly queryGetComunidadById = 'CALL GetCommunityById(?);';
     private readonly queryGetTagsById = 'CALL GetCommunityTags(?);'
-
 
     constructor() {}
 
@@ -22,30 +24,49 @@ export default class SQLRep {
         nombre: string,
         descripcion: string,
         image: string | null,
+        numeroMiembros: string,
         privacidad: string,
         fechaCreacion: string,
         creador: number,
-        reglas: string
-    ) => {
+        reglas: string,
+        categoriaId: number,
+        tags: number[] // Lista de IDs de tags
+    ): Promise<number> => {
+        const connectionDB = await connectToDatabase();
+         // Iniciar transacción
+    
         try {
-            const connectionDB = await connectToDatabase();
-            await connectionDB.execute(this.queryInsertComunidad, [
-                nombre,
-                descripcion,
-                image,
-                privacidad,
-                fechaCreacion,
-                creador,
-                reglas
-            ]);
-
-            console.log('Comunidad creada exitosamente');
+            await connectionDB.beginTransaction();
+    
+            // Insertar la comunidad y obtener su ID
+            const [result]: any = await connectionDB.execute(
+                this.queryInsertComunidad, 
+                [nombre, descripcion, image, parseFloat(numeroMiembros), privacidad, fechaCreacion, creador, reglas, categoriaId]
+            );
+    
+            const communityId = result[0][0].community_id;
+    
+            // Insertar la relación con las tags
+            for (const tagId of tags) {
+                await connectionDB.execute(
+                    this.queryInsertCommunityTag,
+                    [communityId, tagId]
+                );
+            }
+    
+            await connectionDB.commit(); // Confirmar transacción
+    
+            console.log('Comunidad creada exitosamente con ID:', communityId);
+            return communityId;
         } catch (error) {
+            await connectionDB.rollback(); // Revertir cambios en caso de error
             console.error('Error al crear la comunidad:', error);
+            throw new Error('Error al guardar la comunidad en la base de datos');
+        } finally {
+            
         }
-    }
-
-
+    };
+    
 
     public deleteById = async (id: number) => {
         const conectionDB = await connectToDatabase();

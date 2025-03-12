@@ -9,4 +9,5 @@ export default interface CommunityDataInterface {
     creation_date: string; // Fecha de creación
     creator_id: number; // ID del creador
     community_rules: string; // Reglas de la comunidad
+    tags : number[];
 }
