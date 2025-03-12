@@ -125,7 +125,7 @@ router.get('/clubs', authMiddleware, getAllCommunity);
  *                 description: Reglas de la comunidad
  *               category:
  *                 type: string
- *                 description: Nombre de la categoría
+ *                 description: ID de la categoría a la que pertenece la comunidad
  *               tags:
  *                 type: array
  *                 items:
@@ -138,7 +138,7 @@ router.get('/clubs', authMiddleware, getAllCommunity);
  *               privacy: "PUBLICO"
  *               creation_date: "2025-03-12"
  *               rules: "Reglas de respeto y buen comportamiento"
- *               category: "Tecnología"
+ *               category: "1"
  *               tags: [1, 2, 3]
  *     responses:
  *       201:
