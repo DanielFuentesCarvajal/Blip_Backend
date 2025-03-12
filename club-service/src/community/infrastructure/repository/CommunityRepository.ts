@@ -22,11 +22,10 @@ export default class CommunityRepository implements ICommunityRepository {
             creator_id: comunidad.owner, // ID del creador
             community_rules: comunidad.rules, // Reglas de la comunidad
             category: comunidad.category_name,
-            image: comunidad.image
+            image: comunidad.image,
+            tags: []
         }));
     }
-
-    
 
     findById = async (id: string): Promise<CommunityDataInterface> => {
         const communityFromDB = await this.sqlRep.getComunidadById(parseFloat(id))
@@ -40,21 +39,31 @@ export default class CommunityRepository implements ICommunityRepository {
             creator_id: communityFromDB[0].owner, // ID del creador
             community_rules: communityFromDB[0].rules, // Reglas de la comunidad
             category: communityFromDB[0].category_name,
-            image: communityFromDB[0].image
+            image: communityFromDB[0].image,
+            tags: []
         }
         return communityR
     }
 
     save = (item: CommunityDataInterface): void => {
-        this.sqlRep.save(item.name, item.description, item.image, item.privacy, item.creation_date, item.creator_id, item.community_rules)    
-    }
-
+        this.sqlRep.save(
+            item.name, 
+            item.description, 
+            item.image, 
+            item.members_number.toString(), // Convertir a string porque el procedimiento lo espera como VARCHAR(45)
+            item.privacy, 
+            item.creation_date, 
+            item.creator_id, 
+            item.community_rules, 
+            parseInt(item.category), // Convertir a número (asumiendo que `category` es un ID numérico en la base de datos)
+            item.tags // Lista de IDs de tags
+        );
+    };
     
     update = async (id: string, item: CommunityDataInterface): Promise<void> => {
         if(!item.name || !item.description || !item.creation_date || !item.creator_id) return
         this.sqlRep.update(parseFloat(id), item.name, item.description , item.creation_date, item.creator_id)
     }
-
 
     delete = async(id: string): Promise<boolean> => {
         console.log('estamos en delete del repository')
@@ -62,7 +71,4 @@ export default class CommunityRepository implements ICommunityRepository {
         this.sqlRep.deleteById(parseFloat(id))
         return true // falta implementar si si está la cita borrar
     }
-
-    
-
 }
