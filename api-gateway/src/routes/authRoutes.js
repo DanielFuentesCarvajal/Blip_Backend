@@ -23,7 +23,7 @@ const router = express.Router();
  *                 type: string
  *                 description: Contraseña del usuario
  *             example:
- *               email: "maria@example.com"
+ *               email: "carlos@example.com"
  *               contraseña: "password123"
  *     responses:
  *       200:
