@@ -1,11 +1,14 @@
 export default interface CommunityUseCaseSavePort {
     save (
+        //id
         name: string,
         descripcion: string,
         image: string | null,
         privacidad: string,
         creation_date: string,
         creator_user: number,
-        rules: string
+        rules: string,
+        category: string,
+        tags: number[]
     ): Promise<void>
 }
