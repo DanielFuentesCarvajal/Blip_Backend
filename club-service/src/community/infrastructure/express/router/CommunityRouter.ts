@@ -41,14 +41,14 @@ export default class CommunityRouterExpress extends RouterExpress implements Com
 
     public getAllCategory(): void {
         this.router.get(
-            '/v1.0/com/category',
+            '/v1.0/community/categories/category',
             this.communityController.getAllCategory.bind(this.communityController)
         )
     }
 
     public getAllTags(): void {
         this.router.get(
-            '/v1.0/com/tags',
+            '/v1.0/community/tags/tag',
             this.communityController.getAllTags.bind(this.communityController)
         )
     }
