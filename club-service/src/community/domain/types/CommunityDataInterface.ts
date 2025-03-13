@@ -4,7 +4,7 @@ export default interface CommunityDataInterface {
     description: string; // Descripción
     image: string; //
     members_number: number; // Número de miembros
-    category: string; // Nombre de categoría
+    category: number; // Nombre de categoría
     privacy: string; // Estado de la comunidad (PUBLICO, PRIVADO)
     creation_date: string; // Fecha de creación
     creator_id: number; // ID del creador

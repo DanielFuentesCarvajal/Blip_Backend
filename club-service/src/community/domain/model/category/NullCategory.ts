@@ -2,7 +2,7 @@ import Category from "./Category";
 
 export default class NullCategory extends Category {
     constructor() {
-        super('0', 'Unknown', 'Unknown');
+        super('0', 'Unknown', 'Unknow', 'Unknown');
     }
 
     public override isNull = (): boolean => {
