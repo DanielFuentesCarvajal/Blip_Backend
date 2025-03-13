@@ -21,7 +21,7 @@ export default class CommunityRepository implements ICommunityRepository {
             creation_date: comunidad.creation_date, // Fecha de creación
             creator_id: comunidad.owner, // ID del creador
             community_rules: comunidad.rules, // Reglas de la comunidad
-            category: comunidad.category_name,
+            category: comunidad.category,
             image: comunidad.image,
             tags: []
         }));
@@ -29,6 +29,11 @@ export default class CommunityRepository implements ICommunityRepository {
 
     findById = async (id: string): Promise<CommunityDataInterface> => {
         const communityFromDB = await this.sqlRep.getComunidadById(parseFloat(id))
+
+        console.log('============la creation===============')
+        console.log( communityFromDB[0].creation_date)
+        console.log('=================================')
+
         const communityR = {
             community_id: communityFromDB[0].community_id,
             name: communityFromDB[0].name, 
@@ -38,7 +43,7 @@ export default class CommunityRepository implements ICommunityRepository {
             creation_date: communityFromDB[0].creation_date, // Fecha de creación
             creator_id: communityFromDB[0].owner, // ID del creador
             community_rules: communityFromDB[0].rules, // Reglas de la comunidad
-            category: communityFromDB[0].category_name,
+            category: communityFromDB[0].category,
             image: communityFromDB[0].image,
             tags: []
         }
@@ -55,7 +60,7 @@ export default class CommunityRepository implements ICommunityRepository {
             item.creation_date, 
             item.creator_id, 
             item.community_rules, 
-            parseInt(item.category), // Convertir a número (asumiendo que `category` es un ID numérico en la base de datos)
+            item.category, // Convertir a número (asumiendo que `category` es un ID numérico en la base de datos)
             item.tags // Lista de IDs de tags
         );
     };

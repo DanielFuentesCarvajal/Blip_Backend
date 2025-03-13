@@ -16,7 +16,7 @@ export default class NullCommunity extends abstractCommunity {
             creator: 0,
             category: new NullCategory(),
             tags: [new NullTag()],
-            rules: 'NN'
+            rules: ['No rules']	
             }
         );
     }

@@ -13,7 +13,7 @@ export default abstract class abstractCommunity {
     public creator: number;
     public category: Category
     public tags: Tags[]
-    public rules: string
+    public rules: string[]
 
 
     constructor(communityAttributes: CommunityAttributes) {
@@ -46,5 +46,5 @@ export interface CommunityAttributes {
      creator: number,
      category: Category,
      tags: Tags[],
-     rules: string
+     rules: string[]
 }

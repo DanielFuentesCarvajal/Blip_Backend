@@ -2,11 +2,13 @@ export default class Category {
 
     private idCategory: string;
     private name : string;
+    private color : string;
     private icon : string;
 
-    constructor(idCategory: string, name: string, icon: string){
+    constructor(idCategory: string, name: string,  color : string, icon: string){
         this.idCategory = idCategory;
         this.name = name;
+        this.color = color;
         this.icon = icon;
     }
 
@@ -38,6 +40,12 @@ export default class Category {
         this.icon = icon;
     }
 
-    
+    public getColor() {
+        return this.color;
+    }
+
+    public setColor(color: string) {
+        this.color = color;
+    }
 
 }

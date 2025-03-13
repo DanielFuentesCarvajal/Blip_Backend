@@ -12,6 +12,8 @@ export default class SQLRep {
     private readonly queryGetComunidadById = 'CALL GetCommunityById(?);';
     private readonly queryGetTagsById = 'CALL GetCommunityTags(?);'
 
+    private readonly queryGetCategoryById = 'CALL GetCategoryById(?)';
+
     constructor() {}
 
     public findAll = async () => {
@@ -111,6 +113,11 @@ export default class SQLRep {
         return rows;
     }
 
+    public getCategoryById = async (id: number) => {
+        const conectionDB = await connectToDatabase();
+        const [rows] = await conectionDB.execute(this.queryGetCategoryById, [id]) as any[]; 
+        return rows;
+    }
     
 
 }
