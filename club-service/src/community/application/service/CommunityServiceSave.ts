@@ -17,4 +17,7 @@ public save = async (communitySave: CommunityDataInterface): Promise<void> => {
     this.SQLCommunity.save(communitySave);
 }
 
+
+
+
 }
