@@ -14,6 +14,9 @@ export default class SQLRep {
 
     private readonly queryGetCategoryById = 'CALL GetCategoryById(?)';
 
+    private readonly queryGetCategories = 'SELECT * FROM category';
+    private readonly queryGetTags = 'SELECT * FROM tags';
+
     constructor() {}
 
     public findAll = async () => {
@@ -119,5 +122,19 @@ export default class SQLRep {
         return rows;
     }
     
+    public getAllTags = async () => {
+        const conectionDB = await connectToDatabase();
+        const [rows] = await conectionDB.execute(this.queryGetTags) as any[]; 
+        console.log('Tags obtenidas:', rows);
+
+        return rows;
+    }
+
+    public getAllCategory = async () => {
+        const conectionDB = await connectToDatabase();
+        const [rows] = await conectionDB.execute(this.queryGetCategories) as any[]; 
+        console.log('Categorias obtenidas:', rows);
+        return rows;
+    }
 
 }

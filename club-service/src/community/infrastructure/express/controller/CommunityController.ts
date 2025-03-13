@@ -84,4 +84,16 @@ export default class CommunityController implements CommunityControllerExpressPo
         res.status(200).json(communityR);
     }
 
+    public async getAllCategory(_req: Request, res: Response): Promise<void> {
+        console.log('Im in the controller')
+        const category = await this.communityUseCaseGet.getAllCategory()
+        res.status(200).json(category)
+    }
+
+    public async getAllTags(_req: Request, res: Response): Promise<void> {
+        console.log('Im in the controller')
+        const tags = await this.communityUseCaseGet.getAllTags()
+        res.status(200).json(tags)
+    }
+
 }
