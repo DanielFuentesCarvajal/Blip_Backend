@@ -26,6 +26,8 @@ export default class CommunityServiceGet implements CommunityServiceGetPort {
                 if (!tags || tags.length === 0) {
                 console.warn(`No se encontraron tags para la comunidad con ID ${community.community_id}`);
                 }
+
+                const category = await this.tagRepository.getCategoryById(community.category.toString());
                 return new Community({
                     id: community.community_id,
                     name: community.name,
@@ -36,9 +38,9 @@ export default class CommunityServiceGet implements CommunityServiceGetPort {
                     creation_date: community.creation_date,
                     list_members: [],
                     creator: community.creator_id,
-                    category: new Category('0', community.category, '' ),
-                    tags: await Promise.all(tags.map(async (tag) => new Tags(tag.idTags.toString(), tag.nametag))), // Se aplica Promise.all aquí también
-                    rules: community.community_rules
+                    category: new Category(category.idcategory.toString(), category.category, category.icon, category.color),
+                    tags: await Promise.all(tags.map(async (tag) => new Tags(tag.idTags.toString(), tag.nametag, tag.color))),// Se aplica Promise.all aquí también
+                    rules: this.parseRules(community.community_rules)
                 });
             })
         );
@@ -53,11 +55,8 @@ export default class CommunityServiceGet implements CommunityServiceGetPort {
             if (!tags || tags.length === 0) {
             console.warn(`No se encontraron tags para la comunidad con ID ${sqlCommunity.community_id}`);
         }
-        
-        console.log('================================================')
-        console.log('interface de community')
-        console.log(sqlCommunity)
-        console.log('================================================')
+
+        const category = await this.tagRepository.getCategoryById(sqlCommunity.category.toString());
 
         const community = new Community({
             id: sqlCommunity.community_id,
@@ -69,16 +68,16 @@ export default class CommunityServiceGet implements CommunityServiceGetPort {
             creation_date: sqlCommunity.creation_date,
             list_members: [],
             creator: sqlCommunity.creator_id,
-            category: new Category('0', sqlCommunity.category, '' ),
-            tags: await Promise.all(tags.map(async (tag) => new Tags(tag.idTags.toString(), tag.nametag))), // Se aplica Promise.all aquí también
-            rules: sqlCommunity.community_rules
+            category: new Category(category.idcategory.toString(), category.category, category.icon, category.color),
+            tags: await Promise.all(tags.map(async (tag) => new Tags(tag.idTags.toString(), tag.nametag, tag.color))),// Se aplica Promise.all aquí también
+            rules: this.parseRules(sqlCommunity.community_rules)
         })
-
-        console.log('================================================')
-        console.log('comunidad construida')
-        console.log(community)
-        console.log('================================================')
-
         return community;
     }    
+
+    private parseRules(rules: string): string[] {
+        return rules.split(",").map(rule => rule.trim());
+    }
+
+
 }

@@ -28,9 +28,9 @@ export default class CommunityUseCaseSave implements CommunityUseCaseSavePort{
             description: description, // Descripción
             image: image, //
             members_number: 0, // Número de miembros
-            category: category, // Nombre de categoría
+            category: parseFloat(category), // id de categoría
             privacy: privacy, // Estado de la comunidad (PUBLICO, PRIVADO)
-            creation_date: creation_date, // Fecha de creación
+            creation_date: creation_date , // Fecha de creación
             creator_id: creator_id, // ID del creador
             community_rules: community_rules,
             tags: tags
