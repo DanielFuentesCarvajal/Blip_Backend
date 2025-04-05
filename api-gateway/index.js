@@ -4,10 +4,20 @@ const swaggerUi = require('swagger-ui-express');
 const authRoutes = require('./src/routes/authRoutes');
 const userRoutes = require('./src/routes/userRoutes');
 const clubRoutes = require('./src/routes/clubRoutes');
+const cors = require('cors'); // Importa el paquete cors
 
-
-const app = express();
+const app = express(); 
 const PORT = 3000;
+
+
+// Configura CORS
+app.use(cors({
+  origin: '*', // Permitir cualquier origen
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Métodos HTTP permitidos
+  allowedHeaders: ['Content-Type', 'Authorization'], // Permitir headers personalizados como JWT
+  exposedHeaders: ['Authorization'], // Permitir que el frontend acceda a la cabecera Authorization
+  credentials: true // Permitir credenciales (si usas cookies, sesiones, etc.)
+}));
 
 app.use(express.json());
 
