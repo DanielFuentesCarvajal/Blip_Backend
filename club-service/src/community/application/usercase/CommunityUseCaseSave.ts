@@ -38,4 +38,10 @@ export default class CommunityUseCaseSave implements CommunityUseCaseSavePort{
         });
     };
 
+    async joinCommunity(user_id: number, community_id: number): Promise<void> {
+        await this.communityServiceSave.joinCommunity(user_id, community_id);
+    }
+    
+
+
 }

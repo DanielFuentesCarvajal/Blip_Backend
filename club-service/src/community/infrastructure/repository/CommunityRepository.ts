@@ -12,6 +12,9 @@ export default class CommunityRepository implements ICommunityRepository {
 
     findAll = async (): Promise<CommunityDataInterface[]> => {
         const comunidadesFromDB = await this.sqlRep.findAll();
+
+        if (comunidadesFromDB == null) return [] // Si no hay comunidades, devolver un array vacío
+
         return comunidadesFromDB.map((comunidad: any) => ({
             community_id: comunidad.community_id,
             name: comunidad.name, 
@@ -30,9 +33,21 @@ export default class CommunityRepository implements ICommunityRepository {
     findById = async (id: string): Promise<CommunityDataInterface> => {
         const communityFromDB = await this.sqlRep.getComunidadById(parseFloat(id))
 
-        console.log('============la creation===============')
-        console.log( communityFromDB[0].creation_date)
-        console.log('=================================')
+        if (communityFromDB == null) return {
+            community_id: 0, // ID de la comunidad
+            name: 'Unknown', // Nombre de la comunidad
+            description:'Unknown', // Descripción
+            members_number: 0, 
+            privacy: '',
+            creation_date: '', // Fecha de creación
+            creator_id: 0, // ID del creador
+            community_rules: '', // Reglas de la comunidad
+            category: 0,
+            image: '',
+            tags: []
+        } // Si no hay comunidad, devolver null
+
+       
 
         const communityR = {
             community_id: communityFromDB[0].community_id,
@@ -76,4 +91,10 @@ export default class CommunityRepository implements ICommunityRepository {
         this.sqlRep.deleteById(parseFloat(id))
         return true // falta implementar si si está la cita borrar
     }
+
+    async joinCommunity(user_id: number, community_id: number): Promise<void> {
+    await this.sqlRep.joinCommunity(user_id, community_id);
+    }
+
+
 }

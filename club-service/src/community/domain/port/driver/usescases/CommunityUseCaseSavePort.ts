@@ -11,4 +11,6 @@ export default interface CommunityUseCaseSavePort {
         category: string,
         tags: number[]
     ): Promise<void>
+    joinCommunity(user_id: number, community_id: number): Promise<void>;
+
 }

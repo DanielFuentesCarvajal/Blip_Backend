@@ -11,7 +11,7 @@ export default class CommunityServiceGet implements CommunityServiceGetPort {
         private readonly communityRepository: ICommunityRepository,
         private readonly tagRepository: ITagRepository      
     ){
-        console.log(this.tagRepository)
+        //console.log(this.tagRepository)
     } 
 
 
@@ -77,6 +77,17 @@ export default class CommunityServiceGet implements CommunityServiceGetPort {
 
     private parseRules(rules: string): string[] {
         return rules.split(",").map(rule => rule.trim());
+    }
+
+    public getAllCategory = async (): Promise<Category[]> => {
+        const sqlCategory = await this.tagRepository.getAllCategory();
+        return sqlCategory.map((cate) => new Category(cate.idcategory.toString(), cate.category, cate.icon, cate.color));
+        
+    }
+
+    public getAllTags = async (): Promise<Tags[]>=>  {
+       const sqlTag = await this.tagRepository.findAll();
+       return sqlTag.map((tag) => new Tags(tag.idTags.toString(), tag.nametag, tag.color));
     }
 
 
