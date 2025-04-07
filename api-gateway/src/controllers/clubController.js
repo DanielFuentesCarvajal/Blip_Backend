@@ -67,4 +67,46 @@ const getCommunityById = async (req, res) => {
     }
 };
 
-module.exports = { getAllCommunity, createClub, getCommunityById };
+const getAllCategory = async (req, res) => {
+    try {
+        const url = `${clubServiceBaseUrl}/categories/category`;
+        console.log("➡️ Haciendo solicitud a:", url);
+
+        const response = await axios.get(url, {
+            headers: {
+                Authorization: req.headers['authorization'],
+            }
+        });
+
+        res.status(200).json(response.data);
+    } catch (error) {
+        console.error("Error al obtener las categorías:", error);
+        res.status(500).json({ 
+            message: 'Error al obtener las categorías', 
+            error: error.message 
+        });
+    }
+};
+
+const getAllTags = async (req, res) => {
+    try {
+        const url = `${clubServiceBaseUrl}/tags/tag`;
+        console.log("➡️ Haciendo solicitud a:", url);
+
+        const response = await axios.get(url, {
+            headers: {
+                Authorization: req.headers['authorization'],
+            }
+        });
+
+        res.status(200).json(response.data);
+    } catch (error) {
+        console.error("Error al obtener los tags:", error);
+        res.status(500).json({ 
+            message: 'Error al obtener los tags', 
+            error: error.message 
+        });
+    }
+};
+
+module.exports = { getAllCommunity, createClub, getCommunityById, getAllCategory, getAllTags };

@@ -291,5 +291,77 @@ router.post('/create', authMiddleware, createClub);
  *               message: "Error al obtener la comunidad"
  */
 router.get('/:id', authMiddleware, getCommunityById);
+
+
+/**
+ * @swagger
+ * /club/categories/category:
+ *   get:
+ *     summary: Obtener todas las categorías
+ *     tags: [Clubs]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de categorías obtenida exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   idCategory:
+ *                     type: string
+ *                     description: ID de la categoría
+ *                   name:
+ *                     type: string
+ *                     description: Nombre de la categoría
+ *                   color:
+ *                     type: string
+ *                     description: Color asociado a la categoría
+ *                   icon:
+ *                     type: string
+ *                     description: Icono asociado a la categoría
+ *       401:
+ *         description: Token no válido o no autorizado
+ *       500:
+ *         description: Error al obtener las categorías
+ */
+router.get('/categories/category', authMiddleware, getAllCategory);
+
+/**
+ * @swagger
+ * /club/tags/tag:
+ *   get:
+ *     summary: Obtener todas las etiquetas
+ *     tags: [Clubs]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de etiquetas obtenida exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   idTag:
+ *                     type: string
+ *                     description: ID de la etiqueta
+ *                   name:
+ *                     type: string
+ *                     description: Nombre de la etiqueta
+ *                   color:
+ *                     type: string
+ *                     description: Color asociado a la etiqueta
+ *       401:
+ *         description: Token no válido o no autorizado
+ *       500:
+ *         description: Error al obtener las etiquetas
+ */
+router.get('/tags/tag', authMiddleware, getAllTags);
   
 module.exports = router;
