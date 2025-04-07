@@ -1,4 +1,4 @@
-import mysql from 'mysql2/promise';
+import mysql from 'mysql2/promise'; 
 
 export async function connectToDatabase() {
     const connection = await mysql.createConnection({
@@ -6,8 +6,8 @@ export async function connectToDatabase() {
         user: 'avnadmin',
         password: 'AVNS_ox4JqSQuNT9FIvpQBUJ',
         database: 'service2',
-        port: 15709,  // Asegúrate de que es el puerto correcto
-        connectTimeout: 20000, // Aumenta el tiempo de espera a 20 segundos
+        port: 15709,
+        connectTimeout: 20000,
     });
 
     return connection;

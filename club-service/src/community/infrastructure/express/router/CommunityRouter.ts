@@ -15,6 +15,7 @@ export default class CommunityRouterExpress extends RouterExpress implements Com
         this.getCommunityById();
         this.getAllCategory();
         this.getAllTags();
+        this.joinCommunity();
 
     }
 
@@ -52,6 +53,14 @@ export default class CommunityRouterExpress extends RouterExpress implements Com
             this.communityController.getAllTags.bind(this.communityController)
         )
     }
+
+    public joinCommunity(): void {
+        this.router.post(
+            '/v1.0/community/join',
+            this.communityController.joinCommunity.bind(this.communityController)
+        );
+    }
+    
     
 }
  

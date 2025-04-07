@@ -96,4 +96,23 @@ export default class CommunityController implements CommunityControllerExpressPo
         res.status(200).json(tags)
     }
 
+
+    async joinCommunity(req: Request, res: Response): Promise<void> {
+        const { user_id, community_id } = req.body;
+    
+        if (!user_id || !community_id) {
+            res.status(400).json({ message: 'Faltan datos: user_id o community_id' });
+            return;
+        }
+    
+        try {
+            await this.communityUseCaseSave.joinCommunity(user_id, community_id);
+            res.status(200).json({ message: 'Usuario unido a la comunidad exitosamente' });
+        } catch (error) {
+            res.status(500).json({ message: 'Error al unir al usuario a la comunidad', error });
+        }
+    }
+    
+
+
 }
