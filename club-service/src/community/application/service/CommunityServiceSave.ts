@@ -17,6 +17,11 @@ public save = async (communitySave: CommunityDataInterface): Promise<void> => {
     this.SQLCommunity.save(communitySave);
 }
 
+async joinCommunity(user_id: number, community_id: number): Promise<void> {
+    await this.SQLCommunity.joinCommunity(user_id, community_id);
+}
+
+
 
 
 

@@ -12,7 +12,13 @@ export default class TagRepository implements ITagRepository {
     }
 
     findAll = async (): Promise<TagDataInterface[]> => {
-        return [{idTags: 0, nametag: '', color: 'xxx'}]  
+        const tagsFromDB = await this.sqlRep.getAllTags();
+        
+        return tagsFromDB.map((tag: any) => ({
+            idTags: tag.idtags,
+            nametag: tag.nametag,
+            color : tag.color
+        }));
     }
 
     findById = async (id: string): Promise<TagDataInterface[]> => {
@@ -64,6 +70,20 @@ export default class TagRepository implements ITagRepository {
             icon: cat.icon,
             color : cat.color,
         };
+    }
+
+    getAllCategory = async () : Promise<CategoryDataInterface[]> => {
+        const categoryFromDB = await this.sqlRep.getAllCategory();
+        console.log(categoryFromDB);
+
+        
+        return categoryFromDB.map((category: any) => ({
+            idcategory: category.idcategory,
+            category: category.category,
+            icon: category.icon,
+            color : category.color,
+        }));
+        
     }
 
 }
