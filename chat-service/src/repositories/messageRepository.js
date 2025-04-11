@@ -1,54 +1,23 @@
-// Base de datos en memoria mejorada
-const messages = new Map();
-let lastMessageId = 0;
+const Message = require('../models/messageModel');
+const Chat = require('../models/chatModel');
 
-// Datos iniciales de prueba
-const initializeSampleData = () => {
-  const message1 = {
-    id: `msg_${++lastMessageId}`,
-    chatId: 'chat_1',
-    senderId: 'user1',
-    content: 'Hola, ¿cómo estás?',
-    type: 'text',
-    status: 'delivered',
-    createdAt: new Date(Date.now() - 3600000)
-  };
-  
-  const message2 = {
-    id: `msg_${++lastMessageId}`,
-    chatId: 'chat_1',
-    senderId: 'user2',
-    content: '¡Hola! Estoy bien, ¿y tú?',
-    type: 'text',
-    status: 'read',
-    createdAt: new Date(Date.now() - 1800000)
-  };
+const createMessage = async (chatId, senderId, content, type = 'text') => {
+  // Verifica que el chat existe
+  const chat = await Chat.findById(chatId);
+  if (!chat) {
+    throw new Error('Chat not found');
+  }
 
-  messages.set(message1.id, message1);
-  messages.set(message2.id, message2);
-};
+  // Verifica que el remitente es participante
+  if (chat.participant1 !== senderId && chat.participant2 !== senderId) {
+    throw new Error('Sender is not a participant in this chat');
+  }
 
-initializeSampleData();
-const createMessage = async (chatId, senderId, content, type) => {
-  const id = `msg_${++lastMessageId}`;
-  const message = {
-    id,
-    chatId,
-    senderId,
-    content,
-    type,
-    status: 'sent',
-    createdAt: new Date()
-  };
-  
-  messages.set(id, message);
-  return message;
+  return await Message.create({ chatId, senderId, content, type });
 };
 
 const getMessagesByChat = async (chatId) => {
-  return Array.from(messages.values()).filter(
-    msg => msg.chatId === chatId
-  ).sort((a, b) => a.createdAt - b.createdAt);
+  return await Message.find({ chatId }).sort({ createdAt: 1 }); // Ordena por más antiguo primero
 };
 
 module.exports = { createMessage, getMessagesByChat };

@@ -62,8 +62,20 @@ class RabbitMQListener {
   }
 
   async close() {
-    if (this.channel) await this.channel.close();
-    if (this.connection) await this.connection.close();
+    try {
+      if (this.channel) {
+        await this.channel.close();
+        this.channel = null;
+      }
+      if (this.connection) {
+        await this.connection.close();
+        this.connection = null;
+      }
+      this.isListening = false;
+      console.log('✅ Conexión RabbitMQ cerrada correctamente');
+    } catch (error) {
+      console.error('❌ Error al cerrar conexión RabbitMQ:', error.message);
+    }
   }
 }
 

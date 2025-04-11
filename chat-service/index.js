@@ -1,5 +1,6 @@
 ﻿const express = require('express');
 const { connectRabbitMQ } = require('./src/config/rabbitmq');
+const connectMongoDB = require('./src/config/mongodb'); // Nueva importación
 const chatRoutes = require('./src/routes/chatRoutes');
 
 const app = express();
@@ -10,6 +11,7 @@ app.use('/chats', chatRoutes);
 
 const startServer = async () => {
   try {
+    await connectMongoDB();
     await connectRabbitMQ();
     
     app.listen(port, () => {
