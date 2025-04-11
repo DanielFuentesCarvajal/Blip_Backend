@@ -1,70 +1,48 @@
-class Message {
-    constructor({ content, senderId, type = 'text', timestamp }) {
-      this.content = content;
-      this.senderId = senderId;
-      this.type = type;
-      this.timestamp = timestamp || new Date();
+const mongoose = require('mongoose');
+
+const messageSchema = new mongoose.Schema({
+  content: { type: String, required: true },
+  senderId: { type: String, required: true },
+  type: { type: String, enum: ['text', 'image', 'video', 'audio'], default: 'text' },
+  timestamp: { type: Date, default: Date.now }
+});
+
+const chatSchema = new mongoose.Schema({
+  participant1: { type: String, required: true },
+  participant2: { type: String, required: true },
+  messages: [messageSchema],
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+// Validación para participantes únicos
+chatSchema.path('participant1').validate(function(value) {
+  return value !== this.participant2;
+}, 'Participants must be different users');
+
+// Índice para búsqueda rápida de chats por participantes
+chatSchema.index({ participant1: 1, participant2: 1 }, { unique: true });
+
+// Middleware para actualizar updatedAt
+chatSchema.pre('save', function(next) {
+  this.updatedAt = new Date();
+  next();
+});
+
+// Método para agregar mensajes
+chatSchema.methods.addMessages = function(newMessages) {
+  // Validar participantes
+  newMessages.forEach(msg => {
+    if (this.participant1 !== msg.senderId && this.participant2 !== msg.senderId) {
+      throw new Error(`User ${msg.senderId} is not a participant in this chat`);
     }
-  
-    validate() {
-      if (!this.content || !this.senderId) {
-        throw new Error('Message content and senderId are required');
-      }
-      
-      const validTypes = ['text', 'image', 'video', 'audio'];
-      if (!validTypes.includes(this.type)) {
-        throw new Error('Invalid message type');
-      }
-    }
-  }
-  
-  class Chat {
-    constructor({ id, participant1, participant2, messages = [], createdAt, updatedAt }) {
-      this.id = id;
-      this.participant1 = participant1;
-      this.participant2 = participant2;
-      this.messages = messages.map(msg => new Message(msg));
-      this.createdAt = createdAt || new Date();
-      this.updatedAt = updatedAt || new Date();
-    }
-  
-    validate() {
-      if (!this.participant1 || !this.participant2) {
-        throw new Error('Both participants are required');
-      }
-      
-      if (this.participant1 === this.participant2) {
-        throw new Error('Participants must be different users');
-      }
-    }
-  
-    addMessages(newMessages) {
-      const validatedMessages = newMessages.map(msg => {
-        const message = new Message(msg);
-        message.validate();
-        return message;
-      });
-      
-      this.messages = [...this.messages, ...validatedMessages];
-      this.updatedAt = new Date();
-    }
-  
-    toJSON() {
-      return {
-        id: this.id,
-        participant1: this.participant1,
-        participant2: this.participant2,
-        messageCount: this.messages.length,
-        createdAt: this.createdAt,
-        updatedAt: this.updatedAt,
-        messages: this.messages.map(m => ({
-          content: m.content,
-          senderId: m.senderId,
-          type: m.type,
-          timestamp: m.timestamp
-        }))
-      };
-    }
-  }
-  
-  module.exports = Chat;
+  });
+
+  this.messages.push(...newMessages);
+  this.updatedAt = new Date();
+  return this.save();
+};
+
+const Chat = mongoose.model('Chat', chatSchema);
+
+module.exports = Chat;

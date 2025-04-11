@@ -1,35 +1,17 @@
-class Message {
-    constructor({ id, chatId, senderId, content, type = 'text', createdAt }) {
-      this.id = id;
-      this.chatId = chatId;
-      this.senderId = senderId;
-      this.content = content;
-      this.type = type;
-      this.createdAt = createdAt || new Date();
-      this.status = 'sent'; // sent, delivered, read
-    }
-  
-    validate() {
-      if (!this.chatId || !this.senderId || !this.content) {
-        throw new Error('Missing required message fields');
-      }
-      
-      if (this.type !== 'text' && this.type !== 'image' && this.type !== 'video') {
-        throw new Error('Invalid message type');
-      }
-    }
-  
-    toJSON() {
-      return {
-        id: this.id,
-        chatId: this.chatId,
-        senderId: this.senderId,
-        content: this.content,
-        type: this.type,
-        status: this.status,
-        createdAt: this.createdAt
-      };
-    }
-  }
-  
-  module.exports = Message;
+const mongoose = require('mongoose');
+
+const messageSchema = new mongoose.Schema({
+  chatId: { type: mongoose.Schema.Types.ObjectId, ref: 'Chat', required: true },
+  senderId: { type: String, required: true },
+  content: { type: String, required: true },
+  type: { type: String, enum: ['text', 'image', 'video', 'audio'], default: 'text' },
+  status: { type: String, enum: ['sent', 'delivered', 'read'], default: 'sent' },
+  createdAt: { type: Date, default: Date.now }
+});
+
+// Índice para búsqueda rápida por chatId
+messageSchema.index({ chatId: 1 });
+
+const Message = mongoose.model('Message', messageSchema);
+
+module.exports = Message;

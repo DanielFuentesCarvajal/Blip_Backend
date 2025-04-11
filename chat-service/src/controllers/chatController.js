@@ -41,13 +41,23 @@ const updateChatMessages = async (req, res) => {
   const { messages } = req.body;
   
   try {
+    // Validación básica
+    if (!messages || !Array.isArray(messages)) {
+      return res.status(400).json({ message: 'Messages must be an array' });
+    }
+
     const updatedChat = await chatService.bulkUpdateChat(id, messages);
     if (!updatedChat) {
       return res.status(404).json({ message: 'Chat not found' });
     }
     res.status(200).json(updatedChat);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error('Error updating chat messages:', error);
+    const status = error.message.includes('not a participant') ? 403 : 400;
+    res.status(status).json({ 
+      message: error.message,
+      details: error.details || null
+    });
   }
 };
 
