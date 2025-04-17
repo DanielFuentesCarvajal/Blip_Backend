@@ -1,13 +1,18 @@
-﻿{
+{
   "name": "chat-service",
   "version": "1.0.0",
-  "description": "",
+  "description": "Microservicio de chat con RabbitMQ",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "express": "^4.18.2"
+    "amqplib": "^0.10.3",
+    "express": "^4.18.2",
+    "mongoose": "^8.13.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
   }
 }
