@@ -1,3 +1,5 @@
+//ELIMINAR ESTA CLASE
+
 require('dotenv').config(); 
 const mysql = require('mysql2');
 
