@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+enum Status {
+  active
+  deleted
+}
+
+enum Type {
+  post
+  comment
+}
+
+model posts {
+  id           Int       @id @default(autoincrement())
+  id_community Int
+  id_user      Int
+  title        String
+  body         String    @db.Text
+  media        String
+  status       status
+  post_date    DateTime  @db.Timestamp
+}
+
+model comments {
+  id               Int       @id @default(autoincrement())
+  id_user          Int
+  parent_post      Int
+  text_body        String    @db.Text
+  image_media      String
+  created_at       DateTime  @db.Timestamp
+  status           status
+  id_parent_comment Int
+}
+
+model likes {
+  id          Int      @id @default(autoincrement())
+  id_comment  Int
+  id_post     Int
+  id_user     Int
+  like        Boolean
+  type        Type
+}

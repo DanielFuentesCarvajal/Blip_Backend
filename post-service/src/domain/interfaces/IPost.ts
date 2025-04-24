@@ -4,8 +4,8 @@ export default interface IPost{
     id: number;
     idCommunity: number;
     idUser: number;
-    tittle: String;
-    body: String;
+    tittle: string;
+    body: string;
     postDate: Date;
     media:  string;
     status: Status;
