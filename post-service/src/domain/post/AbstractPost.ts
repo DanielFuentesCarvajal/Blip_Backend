@@ -4,8 +4,9 @@ import IPost from "../interfaces/IPost";
 export default abstract class AbstractPost{
     protected  id: number;
     protected idCommunity: number;
-    protected tittle: String;
-    protected body: String;
+    protected idUser: number;
+    protected tittle: string;
+    protected body: string;
     protected postDate: Date;
     protected media:  string;
     protected status: Status;
@@ -13,12 +14,14 @@ export default abstract class AbstractPost{
     constructor(interfacePost: IPost){
         this.id = interfacePost.id;
         this.idCommunity = interfacePost.idCommunity;
+        this.idUser = interfacePost.idUser;
         this.tittle = interfacePost.tittle;
         this.body = interfacePost.body;
         this.postDate = interfacePost.postDate;
         this.media = interfacePost.media;
         this.status = interfacePost.status;
     }
+    
 
     public abstract isNull(): boolean 
 
@@ -35,16 +38,22 @@ export default abstract class AbstractPost{
     public setIdCommunity(idCommunity: number): void {
         this.idCommunity = idCommunity;
     }
-    public getTittle(): String {
+    public getIdUser(): number {
+        return this.idUser;
+    }
+    public setIdUser(idUser: number): void {
+        this.idUser = idUser;
+    }
+    public getTittle(): string {
         return this.tittle;
     }
-    public setTittle(tittle: String): void {
+    public setTittle(tittle: string): void {
         this.tittle = tittle;
     }
-    public getBody(): String {
+    public getBody(): string {
         return this.body;
     }
-    public setBody(body: String): void {
+    public setBody(body: string): void {
         this.body = body;
     }
     public getPostDate(): Date {

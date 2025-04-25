@@ -1,35 +1,62 @@
 // src/infrastructure/mapper/impl/PostMapperImpl.ts
 
 import { posts as PrismaPost } from "@prisma/client/wasm";
-import { IPostMapper } from "./interface/IPostMapper";
-import IPost from "../../domain/interfaces/IPost";
+
 import { StatusMapper } from "./StatusMapper";
+import Post from "../../domain/post/Post";
+import IPost from "../../domain/interfaces/IPost";
+export default class PostMapper /*implements IPostMapper*/ {
 
-
-export class PostMapperImpl implements IPostMapper {
-  toDomain(prismaPost: PrismaPost): IPost {
-    return {
+  static toDomain(prismaPost: PrismaPost): Post {
+    return new Post({
       id: prismaPost.id,
       idCommunity: prismaPost.id_community,
       idUser: prismaPost.id_user,
-      tittle: prismaPost.title,
+      tittle: prismaPost.title, 
       body: prismaPost.body,
+      postDate: prismaPost.post_date,
       media: prismaPost.media,
       status: StatusMapper.toDomainStatus(prismaPost.status),
-      postDate: prismaPost.post_date
+    }
+    );
+  }
+
+  static toPrisma(domainPost: Post): PrismaPost{
+    return {
+      id: domainPost.getId(),
+      id_community: domainPost.getIdCommunity(),
+      id_user: domainPost.getIdUser(),
+      title: domainPost.getTittle(),
+      body: domainPost.getBody(),
+      media: domainPost.getMedia(),
+      status: StatusMapper.toPrismaStatus(domainPost.getStatus()),
+      post_date: domainPost.getPostDate()
     };
   }
 
-  toPrisma(domainPost: IPost): PrismaPost{
+  static InterfaceToDomain(ipost: IPost): Post {
+    return new Post({
+      id: ipost.id,
+      idCommunity: ipost.idCommunity,
+      idUser: ipost.idUser,
+      tittle: ipost.tittle, 
+      body: ipost.body,
+      postDate: ipost.postDate,
+      media: ipost.media,
+      status: ipost.status,
+    });
+  }
+
+  static DomainToInterface(post: Post): IPost {
     return {
-      id: domainPost.id,
-      id_community: domainPost.idCommunity,
-      id_user: domainPost.idUser,
-      title: domainPost.tittle,
-      body: domainPost.body,
-      media: domainPost.media,
-      status: domainPost.status ? StatusMapper.toPrismaStatus(domainPost.status) : undefined,
-      post_date: domainPost.postDate
+      id: post.getId(),
+      idCommunity: post.getIdCommunity(),
+      idUser: post.getIdUser(),
+      tittle: post.getTittle(),
+      body: post.getBody(),
+      postDate: post.getPostDate(),
+      media: post.getMedia(),
+      status: post.getStatus()
     };
   }
 }
