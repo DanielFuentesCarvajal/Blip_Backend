@@ -2,7 +2,15 @@ const express = require('express');
 const authMiddleware = require('../middlewares/authMiddleware');
 const axios = require('axios');
 const router = express.Router(); // Aquí se define el router correctamente
-const { getAllCommunity, createClub, getCommunityById} = require('../controllers/clubController');
+const { getAllCommunity, 
+    createClub, 
+    getCommunityById, 
+    getAllCategory, 
+    getAllTags,
+    joinCommunity,
+    exitCommunity,
+    getAllCommunitiesByUserId,
+    userInCommunity } = require('../controllers/clubController');
 const CLUB_SERVICE_BASE_URL = 'http://localhost:3003/v1.0/community'; // Base URL para los servicios de comunidad
 
 /**
@@ -188,11 +196,6 @@ router.get('/clubs', authMiddleware, getAllCommunity);
  */
 router.post('/create', authMiddleware, createClub);
 
-
-
-
-
-
 /**
  * @swagger
  * /club/{id}:
@@ -292,7 +295,6 @@ router.post('/create', authMiddleware, createClub);
  */
 router.get('/:id', authMiddleware, getCommunityById);
 
-
 /**
  * @swagger
  * /club/categories/category:
@@ -363,5 +365,216 @@ router.get('/categories/category', authMiddleware, getAllCategory);
  *         description: Error al obtener las etiquetas
  */
 router.get('/tags/tag', authMiddleware, getAllTags);
-  
+
+
+/**
+ * @swagger
+ * /club/join:
+ *   post:
+ *     summary: Unirse a una comunidad
+ *     tags: [Clubs]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               communityId:
+ *                 type: integer
+ *                 description: ID de la comunidad a la que unirse
+ *     responses:
+ *       200:
+ *         description: Unido a la comunidad exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *             example:
+ *               message: "Unido a la comunidad correctamente"
+ *       400:
+ *         description: Error en los datos enviados
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *             example:
+ *               message: "Faltan datos"
+ *       500:
+ *         description: Error al unirse a la comunidad
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *             example:
+ *               message: "Error al unirse a la comunidad"
+ */
+router.post('/join', authMiddleware, joinCommunity);
+
+/**
+ * @swagger
+ * /club/exit:
+ *   delete:
+ *     summary: Salir de una comunidad
+ *     tags: [Clubs]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               communityId:
+ *                 type: integer
+ *                 description: ID de la comunidad de la que salir
+ *     responses:
+ *       200:
+ *         description: Salido de la comunidad correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *             example:
+ *               message: "Saliste de la comunidad correctamente"
+ *       400:
+ *         description: Error en los datos enviados
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *             example:
+ *               message: "Faltan datos"
+ *       500:
+ *         description: Error al salir de la comunidad
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *             example:
+ *               message: "Error al salir de la comunidad"
+ */
+router.delete('/exit', authMiddleware, exitCommunity);
+
+/**
+ * @swagger
+ * /club/user/{id}/communities:
+ *   get:
+ *     summary: Obtener comunidades por ID de usuario
+ *     tags: [Clubs]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID del usuario
+ *     responses:
+ *       200:
+ *         description: Comunidades obtenidas exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     description: ID de la comunidad
+ *                   name:
+ *                     type: string
+ *                     description: Nombre de la comunidad
+ *       401:
+ *         description: Token no válido o no autorizado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *             example:
+ *               message: "Acceso no autorizado"
+ *       500:
+ *         description: Error al obtener las comunidades
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *             example:
+ *               message: "Error al obtener comunidades"
+ */
+router.get('/user/:id/communities',authMiddleware, getAllCommunitiesByUserId);
+
+/**
+ * @swagger
+ * /club/user/in/community:
+ *   get:
+ *     summary: Verificar si el usuario está en una comunidad
+ *     tags: [Clubs]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Estado del usuario en la comunidad
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 isMember:
+ *                   type: boolean
+ *                   description: Indicador si el usuario es miembro de alguna comunidad
+ *       401:
+ *         description: Token no válido o no autorizado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *             example:
+ *               message: "Acceso no autorizado"
+ *       500:
+ *         description: Error al verificar si el usuario está en una comunidad
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *             example:
+ *               message: "Error al verificar estado de usuario"
+ */
+router.get('/user/in/community',authMiddleware, userInCommunity);
+
 module.exports = router;

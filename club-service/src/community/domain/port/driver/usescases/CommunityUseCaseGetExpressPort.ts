@@ -7,4 +7,6 @@ export default interface CommunityUseCaseGetExpressPort {
     getCommunityById(id : string): Promise<Community>
     getAllCategory() : Promise<Category[]>
     getAllTags() : Promise<Tags[]>
+    
+    getAllCommunitiesByUserId(user_id: number): Promise<Community[]>
 }
