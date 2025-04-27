@@ -7,4 +7,7 @@ export default interface CommunityControllerExpressPort {
     getAllCategory(req: Request, res: Response) : void
     getAllTags(req: Request, res: Response) : void
     joinCommunity(req: Request, res: Response): void
+    exitCommunity(req: Request, res: Response): void
+    getAllCommunitiesByUserId(req: Request, res: Response): void
+    userInCommunity(req: Request, res: Response): void
 }

@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+      "target": "ES6",               // Compila a ES6
+      "module": "CommonJS",          // Usa CommonJS para compatibilidad con Node.js
+      "outDir": "./dist",            // Carpeta de salida para los archivos compilados
+      "rootDir": "./src",            // Carpeta de entrada para los archivos TypeScript
+      "strict": true,                // Habilita todas las verificaciones de tipo estrictas
+      "esModuleInterop": true,       // Permite la interoperabilidad entre módulos ES y CommonJS
+      "skipLibCheck": true,          // Omite la verificación de archivos de declaración de tipos
+      "forceConsistentCasingInFileNames": true // Fuerza el uso consistente de mayúsculas en nombres de archivos
+    },
+    "include": ["src/**/*"],         // Incluye todos los archivos en la carpeta `src`
+    "exclude": ["node_modules"]      // Excluye la carpeta `node_modules`
+  }

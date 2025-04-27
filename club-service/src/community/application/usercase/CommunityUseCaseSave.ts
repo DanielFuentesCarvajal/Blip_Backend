@@ -41,7 +41,15 @@ export default class CommunityUseCaseSave implements CommunityUseCaseSavePort{
     async joinCommunity(user_id: number, community_id: number): Promise<void> {
         await this.communityServiceSave.joinCommunity(user_id, community_id);
     }
-    
 
+    async exitCommunity(user_id: number, community_id: number): Promise<void> {
+        await this.communityServiceSave.exitCommunity(user_id, community_id);
+    }
+    
+    async userInCommunity(user_id: number, community_id: number): Promise<boolean> {
+        return await this.communityServiceSave.userInCommunity(user_id, community_id);
+    }
+    
+    
 
 }

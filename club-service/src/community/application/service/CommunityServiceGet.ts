@@ -90,5 +90,33 @@ export default class CommunityServiceGet implements CommunityServiceGetPort {
        return sqlTag.map((tag) => new Tags(tag.idTags.toString(), tag.nametag, tag.color));
     }
 
+    async getAllCommunitiesByUserId(user_id: number): Promise<Community[]> {
+        const sqlCommunities = await this.communityRepository.getAllCommunitiesByUserId(user_id);
+    
+        const communities = await Promise.all(
+            sqlCommunities.map(async (community) => {
+                const tags = await this.tagRepository.findById(community.community_id.toString());
+                const category = await this.tagRepository.getCategoryById(community.category.toString());
+    
+                return new Community({
+                    id: community.community_id,
+                    name: community.name,
+                    description: community.description,
+                    image: community.image || '',
+                    number_members: community.members_number,
+                    privacy: community.privacy,
+                    creation_date: community.creation_date,
+                    list_members: [], // Puedes llenarlo si quieres traer los miembros
+                    creator: community.creator_id,
+                    category: new Category(category.idcategory.toString(), category.category, category.icon, category.color),
+                    tags: await Promise.all(tags.map(async (tag) => new Tags(tag.idTags.toString(), tag.nametag, tag.color))),
+                    rules: this.parseRules(community.community_rules)
+                });
+            })
+        );
+    
+        return communities;
+    }
+    
 
 }
