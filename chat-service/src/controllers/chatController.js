@@ -7,9 +7,14 @@ const createOrGetChat = async (req, res) => {
     const chat = await chatService.getOrCreateChat(participant1, participant2);
     res.status(200).json(chat);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error('Error en creación de chat:', error);
+    res.status(400).json({ 
+      message: error.message,
+      error: error.toString() 
+    });
   }
 };
+
 
 const getChat = async (req, res) => {
   const { id } = req.params;

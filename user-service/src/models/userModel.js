@@ -1,3 +1,6 @@
+const promisePool = require('../config/db'); // Importar promisePool
+
+
 class User {
   constructor({ id, names, lastname, nickname, mail, password }) {
     this.id = id;
@@ -29,6 +32,13 @@ class User {
       mail: this.mail,
       password: this.password,
     };
+  }
+  static async exists(userId) {
+    const [rows] = await promisePool.query(
+      'SELECT 1 FROM users WHERE idusers = ?', 
+      [userId]
+    );
+    return rows.length > 0;
   }
 }
 

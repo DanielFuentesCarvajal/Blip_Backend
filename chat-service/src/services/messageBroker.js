@@ -23,5 +23,27 @@ const publishChatEvent = async (eventType, eventData) => {
     throw error;
   }
 };
+const publishChatRollback = async (chatId) => {
+  try {
+    const channel = getChannel();
+    const message = {
+      event: 'CHAT_ROLLBACK',
+      chatId,
+      timestamp: new Date()
+    };
+    
+    await channel.publish(
+      'chat_events',
+      'chat.rollback',
+      Buffer.from(JSON.stringify(message)),
+      { persistent: true }
+    );
+    
+    console.log(`📤 Sent RabbitMQ rollback event for chat: ${chatId}`);
+  } catch (error) {
+    console.error('Error publishing rollback event:', error);
+    throw error;
+  }
+};
 
-module.exports = { publishChatEvent };
+module.exports = { publishChatEvent, publishChatRollback };

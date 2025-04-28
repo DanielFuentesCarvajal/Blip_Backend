@@ -1,92 +1,74 @@
-const amqp = require('amqplib');
+const { getChannel } = require('../config/rabbitmq');
+const chatIntegrationService = require('./chatIntegrationService');
 
 class RabbitMQListener {
   constructor() {
-    this.connection = null;
-    this.channel = null;
     this.isListening = false;
     this.queueName = 'user_service_chat_events';
+    this.channel = null;
+    this.closing = false;
   }
 
   async start() {
     if (this.isListening) return;
 
     try {
-      // 1. Conectarse a RabbitMQ
-      this.connection = await amqp.connect('amqp://guest:guest@localhost');
-      this.channel = await this.connection.createChannel();
-
-      // 2. Declarar el exchange (debe coincidir con el del chat-service)
-      await this.channel.assertExchange('chat_events', 'topic', { durable: true });
-
-      // 3. Crear una cola DURABLE con nombre específico
+      await chatIntegrationService.initialize(); // Inicializamos el servicio primero
+      this.channel = await getChannel();
+    
       await this.channel.assertQueue(this.queueName, { durable: true });
-
-      // 4. Enlazar la cola al exchange para eventos de chat creado
       await this.channel.bindQueue(this.queueName, 'chat_events', 'chat.created');
-
+      
       console.log('🔄 User Service esperando eventos de chat...');
-
-      // 5. Configurar el consumidor con prefetch 1
+      
       await this.channel.prefetch(1);
-      this.channel.consume(this.queueName, (message) => {
+      this.channel.consume(this.queueName, async (message) => {
         if (message) {
           try {
             const content = JSON.parse(message.content.toString());
-            console.log('📬 Evento recibido - Chat creado:');
-            console.log('   ID del chat:', content.chatId);
-            console.log('   Participantes:', content.participants.join(' y '));
-            console.log('   Timestamp:', content.timestamp);
-            console.log('-----------------------------------');
+            console.log('📬 Evento recibido - Chat creado:', content.chatId);
             
-            // Confirmar recepción del mensaje
+            await chatIntegrationService._processChatCreation(content);
             this.channel.ack(message);
           } catch (error) {
             console.error('Error procesando mensaje:', error);
+            this.channel.nack(message, false, false);
           }
         }
       });
 
       this.isListening = true;
-
-      // Manejar cierre de conexión
-      this.connection.on('close', () => {
-        console.log('Conexión RabbitMQ cerrada');
-        this.isListening = false;
-      });
-
     } catch (error) {
-      console.error('❌ Error en RabbitMQ listener:', error.message);
-      this.isListening = false;
+      console.error('❌ Error en RabbitMQ listener:', error);
+      throw error;
     }
   }
 
   async close() {
+    if (this.closing || !this.isListening) return;
+    this.closing = true;
+    
     try {
       if (this.channel) {
-        await this.channel.close();
+        try {
+          await this.channel.cancel(this.queueName);
+          await this.channel.close();
+          console.log('✅ Canal del listener cerrado correctamente');
+        } catch (err) {
+          if (err.message !== 'Channel closed') {
+            console.warn('⚠️ Error al cerrar canal:', err.message);
+          }
+        }
         this.channel = null;
       }
-      if (this.connection) {
-        await this.connection.close();
-        this.connection = null;
-      }
-      this.isListening = false;
-      console.log('✅ Conexión RabbitMQ cerrada correctamente');
     } catch (error) {
-      console.error('❌ Error al cerrar conexión RabbitMQ:', error.message);
+      console.error('❌ Error al cerrar listener:', error.message);
+      throw error;
+    } finally {
+      this.closing = false;
+      this.isListening = false;
     }
   }
 }
 
-// Singleton para evitar múltiples instancias
-const listener = new RabbitMQListener();
-
-// Iniciar automáticamente al importar
-listener.start().catch(console.error);
-
-// Manejar cierre de la aplicación
-process.on('exit', () => listener.close());
-process.on('SIGINT', () => listener.close());
-
-module.exports = { listener };
+module.exports = RabbitMQListener;
