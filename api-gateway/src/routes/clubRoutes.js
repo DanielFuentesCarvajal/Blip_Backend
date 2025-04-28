@@ -2,7 +2,7 @@ const express = require('express');
 const authMiddleware = require('../middlewares/authMiddleware');
 const axios = require('axios');
 const router = express.Router(); // Aquí se define el router correctamente
-const { getAllCommunity, createClub, getCommunityById} = require('../controllers/clubController');
+const { getAllCommunity, createClub, getCommunityById, getAllCategory, getAllTags} = require('../controllers/clubController');
 const CLUB_SERVICE_BASE_URL = 'http://localhost:3003/v1.0/community'; // Base URL para los servicios de comunidad
 
 /**

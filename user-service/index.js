@@ -1,7 +1,10 @@
 ﻿const express = require('express');
 const userRoutes = require('./src/routes/userRoutes');
 const db = require('./src/config/db');
-const { listener } = require('./src/services/rabbitmqListener');
+const promisePool = require('./src/config/db');
+const RabbitMQListener = require('./src/services/rabbitmqListener');
+const { connectRabbitMQ, closeConnection } = require('./src/config/rabbitmq');
+const chatIntegrationService = require('./src/services/chatIntegrationService'); // Importa la instancia singleton
 
 const app = express();
 const PORT = 3001;
@@ -12,40 +15,76 @@ app.use(express.json());
 app.use('/users', userRoutes);
 
 
-const server = app.listen(PORT, () => {
-  console.log(` User Service running on port ${PORT}`);
-  console.log(' Endpoints:');
-  console.log(`- POST   http://localhost:${PORT}/users/register`);
-  console.log(`- POST   http://localhost:${PORT}/users/login`);
-});
+let server;
+let listener;
 
-// Manejo de cierre adecuado
-const gracefulShutdown = async () => {
-  console.log('\n🔴 Recibida señal de apagado, cerrando servidor...');
-  
+const startServer = async () => {
   try {
-    // 1. Cerrar el servidor HTTP
-    await new Promise((resolve) => server.close(resolve));
+    // 1. Conectar a RabbitMQ
+    console.log('🔌 Conectando a RabbitMQ...');
+    await connectRabbitMQ();
+   // 2. Inicializar el servicio de chat (ya es singleton)
+   console.log('🔄 Inicializando ChatIntegrationService...');
+   await chatIntegrationService.initialize();
     
-    // 2. Cerrar conexión RabbitMQ
-    await listener.close();
-    
-    // 3. Cerrar pool de conexiones MySQL
-    const pool = db.pool;
-    await pool.end();
-    
-    console.log('✅ Todos los recursos liberados correctamente');
-    process.exit(0);
-  } catch (err) {
-    console.error('❌ Error durante el cierre:', err);
+  // 3. Crear e iniciar listener
+  console.log('👂 Iniciando listener de RabbitMQ...');
+  listener = new RabbitMQListener();
+  await listener.start();
+
+    // 4. Iniciar servidor HTTP
+    server = app.listen(PORT, () => {
+      console.log(`🚀 User Service running on port ${PORT}`);
+      console.log('🔗 Endpoints:');
+      console.log(`- POST   http://localhost:${PORT}/users/register`);
+      console.log(`- POST   http://localhost:${PORT}/users/login`);
+      console.log('\n👂 Escuchando eventos de chat...');
+    });
+
+  } catch (error) {
+    console.error('💥 Error al iniciar el servidor:', error);
     process.exit(1);
   }
 };
 
-// Capturar señales de terminación
+const gracefulShutdown = async () => {
+  console.log('\n🔴 Apagando user-service...');
+  
+  try {
+    // 1. Detener servidor HTTP
+    if (server) {
+      await new Promise(resolve => server.close(resolve));
+      console.log('✅ Servidor HTTP detenido');
+    }
+
+    // 2. Detener listener RabbitMQ
+    if (listener) {
+      await listener.close();
+      console.log('✅ Listener RabbitMQ detenido');
+    }
+
+    // 3. Cerrar conexión RabbitMQ
+    await closeConnection();
+    console.log('✅ Conexión RabbitMQ cerrada');
+
+    // 4. Cerrar pool de MySQL
+    await promisePool.end();
+    console.log('✅ Pool de MySQL cerrado');
+
+    console.log('✅ Servicio detenido completamente');
+    process.exit(0);
+  } catch (error) {
+    console.error('❌ Error durante el cierre:', error);
+    process.exit(1);
+  }
+};
+
+// Manejar señales de terminación
 process.on('SIGINT', gracefulShutdown);
 process.on('SIGTERM', gracefulShutdown);
-process.on('uncaughtException', (err) => {
-  console.error('⚠️ Excepción no capturada:', err);
-  gracefulShutdown();
+
+// Iniciar el servidor
+startServer().catch(err => {
+  console.error('Error en startServer:', err);
+  process.exit(1);
 });

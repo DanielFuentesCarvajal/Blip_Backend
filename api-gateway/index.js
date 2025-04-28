@@ -4,6 +4,7 @@ const swaggerUi = require('swagger-ui-express');
 const authRoutes = require('./src/routes/authRoutes');
 const userRoutes = require('./src/routes/userRoutes');
 const clubRoutes = require('./src/routes/clubRoutes');
+const chatRoutes = require('./src/routes/chatRoutes');
 const cors = require('cors'); // Importa el paquete cors
 
 const app = express(); 
@@ -63,7 +64,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/auth', authRoutes); // Prefix all auth routes with /auth
 app.use('/user', userRoutes); // Prefix all user routes with /user
 app.use('/club', clubRoutes); // Prefix all club routes with /club
-
+app.use('/chat', chatRoutes);
 app.listen(PORT, () => {
   console.log(`API Gateway running on port ${PORT}`);
   console.log(`Swagger API Docs available at: http://localhost:${PORT}/api-docs`);

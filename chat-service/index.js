@@ -1,7 +1,8 @@
 ﻿const express = require('express');
-const { connectRabbitMQ } = require('./src/config/rabbitmq');
+const { connectRabbitMQ, registerConfirmationHandler } = require('./src/config/rabbitmq');
 const connectMongoDB = require('./src/config/mongodb'); // Nueva importación
 const chatRoutes = require('./src/routes/chatRoutes');
+const { handleChatConfirmation } = require('./src/services/chatService');
 
 const app = express();
 const port = 3007;
@@ -14,6 +15,10 @@ const startServer = async () => {
     await connectMongoDB();
     await connectRabbitMQ();
     
+
+
+    registerConfirmationHandler(handleChatConfirmation);
+
     app.listen(port, () => {
       console.log(`🚀 Chat Service running on port ${port}`);
       console.log('🔗 Endpoints:');
