@@ -34,6 +34,9 @@ export default class implements CommunityUseCaseGetExpressPort {
         return tagsData;
     }
 
+    async getAllCommunitiesByUserId(user_id: number): Promise<any[]> {
+        return await this.communityGetServicePort.getAllCommunitiesByUserId(user_id);
+    }
 
 }
 

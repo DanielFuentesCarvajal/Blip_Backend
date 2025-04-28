@@ -21,6 +21,13 @@ async joinCommunity(user_id: number, community_id: number): Promise<void> {
     await this.SQLCommunity.joinCommunity(user_id, community_id);
 }
 
+async exitCommunity(user_id: number, community_id: number): Promise<void> {
+    await this.SQLCommunity.exitCommunity(user_id, community_id);
+}
+
+async userInCommunity(user_id: number, community_id: number): Promise<boolean> {
+    return await this.SQLCommunity.userInCommunity(user_id, community_id);
+}
 
 
 

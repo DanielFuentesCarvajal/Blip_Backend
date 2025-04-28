@@ -96,5 +96,35 @@ export default class CommunityRepository implements ICommunityRepository {
     await this.sqlRep.joinCommunity(user_id, community_id);
     }
 
+    async exitCommunity(user_id: number, community_id: number): Promise<void> {
+        await this.sqlRep.exitCommunity(user_id, community_id);
+    }
+    
+    async getAllCommunitiesByUserId(user_id: number): Promise<CommunityDataInterface[]> {
+        const communitiesFromDB = await this.sqlRep.getAllCommunitiesByUserId(user_id);
+    
+        if (!communitiesFromDB) return [];
+    
+        return communitiesFromDB.map((community: any) => ({
+            community_id: community.community_id,
+            name: community.name,
+            description: community.description,
+            members_number: community.memberCount,
+            privacy: community.visibility,
+            creation_date: community.creation_date,
+            creator_id: community.owner,
+            community_rules: community.rules,
+            category: community.category,
+            image: community.image,
+            tags: [] // los tags puedes llenarlos luego si necesitas, ahora dejamos vacío como en findAll
+        }));
+    }
+    
+    async userInCommunity(user_id: number, community_id: number): Promise<boolean> {
+        const result = await this.sqlRep.userInCommunity(user_id, community_id);
+        return result && result.length > 0;
+    }
+    
+    
 
 }

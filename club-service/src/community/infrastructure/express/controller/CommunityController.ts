@@ -99,7 +99,9 @@ export default class CommunityController implements CommunityControllerExpressPo
 
     async joinCommunity(req: Request, res: Response): Promise<void> {
         const { user_id, community_id } = req.body;
-    
+        
+        
+
         if (!user_id || !community_id) {
             res.status(400).json({ message: 'Faltan datos: user_id o community_id' });
             return;
@@ -112,7 +114,52 @@ export default class CommunityController implements CommunityControllerExpressPo
             res.status(500).json({ message: 'Error al unir al usuario a la comunidad', error });
         }
     }
+
+    async exitCommunity(req: Request, res: Response): Promise<void> {
+        const { user_id, community_id } = req.body;
+        
     
+        if (!user_id || !community_id) {
+            res.status(400).json({ message: 'Faltan datos: user_id o community_id' });
+            return;
+        }
+    
+        try {
+            await this.communityUseCaseSave.exitCommunity(parseFloat(user_id), community_id);
+            res.status(200).json({ message: 'Usuario salió de la comunidad exitosamente' });
+        } catch (error) {
+            res.status(500).json({ message: 'Error al salir de la comunidad', error });
+        }
+    }
 
-
+    async getAllCommunitiesByUserId(req: Request, res: Response): Promise<void> {
+        let userId = req.params['id']
+    
+        if (!userId) {
+            res.status(400).json({ message: 'Falta el user_id' });
+            return;
+        }
+    
+        try {
+            const communities = await this.communityUseCaseGet.getAllCommunitiesByUserId(parseFloat(userId));
+            res.status(200).json({ communities });
+        } catch (error) {
+            res.status(500).json({ message: 'Error al obtener las comunidades del usuario', error });
+        }
+    }
+    async userInCommunity(req: Request, res: Response): Promise<void> {
+        const { user_id, community_id } = req.body;
+    
+        if (!user_id || !community_id) {
+            res.status(400).json({ message: 'Faltan datos: user_id o community_id' });
+            return;
+        }
+    
+        try {
+            const isMember = await this.communityUseCaseSave.userInCommunity(parseFloat(user_id), community_id);
+            res.status(200).json({ isMember });
+        } catch (error) {
+            res.status(500).json({ message: 'Error al verificar si el usuario está en la comunidad', error });
+        }
+    }
 }
