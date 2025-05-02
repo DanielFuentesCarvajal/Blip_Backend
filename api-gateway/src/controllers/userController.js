@@ -17,5 +17,14 @@ const registerUser = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+const getAllUsers = async (req, res) => {
+  try {
+    const response = await httpService.get(`${userServiceBaseUrl}/all`);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(error.status || 500).json({ message: error.message });
+  }
+};
 
-module.exports = { registerUser };
+// Añadir al module.exports
+module.exports = { registerUser, getAllUsers };
