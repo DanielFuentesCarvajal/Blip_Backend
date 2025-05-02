@@ -35,9 +35,10 @@ const startServer = async () => {
     // 4. Iniciar servidor HTTP
     server = app.listen(PORT, () => {
       console.log(`🚀 User Service running on port ${PORT}`);
-      console.log('🔗 Endpoints:');
+      console.log('🔗 Endpoints disponibles:');
       console.log(`- POST   http://localhost:${PORT}/users/register`);
       console.log(`- POST   http://localhost:${PORT}/users/login`);
+      console.log(`- GET    http://localhost:${PORT}/users/all`); // Nuevo endpoint listado
       console.log('\n👂 Escuchando eventos de chat...');
     });
 

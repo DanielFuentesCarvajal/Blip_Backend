@@ -47,4 +47,10 @@ const loginUser = async (email, password) => {
   return user;
 };
 
-module.exports = { registerUser, loginUser };
+// Obtener todos los usuarios (excluyendo contraseñas)
+const getAllUsers = async () => {
+  return await userRepository.getAllUsers(); 
+  // Ya no necesita transformación porque la query solo trae los campos necesarios
+};
+
+module.exports = { registerUser, loginUser, getAllUsers };

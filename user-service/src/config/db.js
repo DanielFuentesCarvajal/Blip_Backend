@@ -3,9 +3,9 @@ const mysql = require('mysql2');
 // Configuración de la base de datos
 const dbConfig = {
   host: 'sql10.freesqldatabase.com',
-  user: 'sql10775418',
-  password: 'pCvfbCrRX4',
-  database: 'sql10775418',  
+  user: 'sql10776467',
+  password: 'phzyUUzq2n',
+  database: 'sql10776467',  
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0

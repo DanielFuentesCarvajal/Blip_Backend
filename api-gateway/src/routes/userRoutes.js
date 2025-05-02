@@ -1,6 +1,6 @@
 const express = require('express');
-const { registerUser } = require('../controllers/userController');
-
+const { registerUser, getAllUsers } = require('../controllers/userController');
+const authMiddleware = require('../middlewares/authMiddleware');
 const router = express.Router();
 
 /**
@@ -63,5 +63,35 @@ const router = express.Router();
  *               message: "El email ya está registrado"
  */
 router.post('/register', registerUser);
+
+/**
+ * @swagger
+ * /user/all:
+ *   get:
+ *     summary: Obtener todos los usuarios (solo información pública)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de usuarios
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   idusers:
+ *                     type: integer
+ *                   nickname:
+ *                     type: string
+ *                   mail:
+ *                     type: string
+ *       401:
+ *         description: No autorizado
+ */
+router.get('/all', authMiddleware, getAllUsers); // Protegido con JWT
+
 
 module.exports = router;
