@@ -1,4 +1,4 @@
-const promisePool = require('../config/db'); // Importar promisePool
+const { promisePool } = require('../config/db'); // Importar promisePool
 
 
 class User {

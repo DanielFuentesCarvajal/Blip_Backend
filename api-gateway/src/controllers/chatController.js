@@ -3,19 +3,19 @@ const authMiddleware = require('../middlewares/authMiddleware');
 
 const createOrGetChat = async (req, res) => {
   try {
-    // Extraemos ambos participantes del body
-    const { participant1, participant2 } = req.body;
-    
-    // Validamos que vengan ambos participantes
-    if (!participant1 || !participant2) {
-      return res.status(400).json({ message: 'Both participants are required' });
+    // Extraemos el ID del usuario autenticado desde el JWT (inyectado por el middleware)
+    const participant1 = String(req.userId);
+    const participant2 = String(req.body.participant2);
+
+    if (!participant2) {
+      return res.status(400).json({ message: 'participant2 is required in the request body' });
     }
 
     const response = await httpService.post(`${process.env.CHAT_SERVICE_URL}`, {
       participant1,
       participant2
     });
-    
+
     res.status(200).json(response);
   } catch (error) {
     res.status(400).json({ 
