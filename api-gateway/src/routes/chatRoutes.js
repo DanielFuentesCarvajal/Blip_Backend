@@ -24,14 +24,10 @@ const router = express.Router();
  *           schema:
  *             type: object
  *             properties:
- *               participant1:
- *                 type: string
- *                 description: ID del primer participante
  *               participant2:
  *                 type: string
  *                 description: ID del segundo participante
  *             example:
- *               participant1: "user123"
  *               participant2: "user456"
  *     responses:
  *       200:

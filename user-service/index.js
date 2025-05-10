@@ -1,7 +1,7 @@
 ﻿const express = require('express');
 const userRoutes = require('./src/routes/userRoutes');
 const db = require('./src/config/db');
-const promisePool = require('./src/config/db');
+const { promisePool } = require('./src/config/db');
 const RabbitMQListener = require('./src/services/rabbitmqListener');
 const { connectRabbitMQ, closeConnection } = require('./src/config/rabbitmq');
 const chatIntegrationService = require('./src/services/chatIntegrationService'); // Importa la instancia singleton

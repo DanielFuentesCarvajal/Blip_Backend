@@ -78,19 +78,32 @@ class ChatIntegrationService {
         await this.publishConfirmation(chatId, true);
         return;
       }
-
+      await promisePool.query('SELECT 1'); // ping para asegurar conexión viva
       await promisePool.query('START TRANSACTION');
       
       // Verificación de usuarios con LOCK
-      const [user1] = await promisePool.query(
-        'SELECT idusers FROM users WHERE idusers = ? FOR UPDATE', 
-        [sortedParticipants[0]]
-      );
+      let user1, user2;
+      try {
+        [user1] = await promisePool.query(
+          'SELECT idusers FROM users WHERE idusers = ? FOR UPDATE', 
+          [sortedParticipants[0]]
+        );
+      } catch (e) {
+        console.error('❌ Error al consultar user1:', e);
+        throw e;
+      }
       
-      const [user2] = await promisePool.query(
-        'SELECT idusers FROM users WHERE idusers = ? FOR UPDATE', 
-        [sortedParticipants[1]]
-      );
+      try {
+        [user2] = await promisePool.query(
+          'SELECT idusers FROM users WHERE idusers = ? FOR UPDATE', 
+          [sortedParticipants[1]]
+        );
+      } catch (e) {
+        console.error('❌ Error al consultar user2:', e);
+        throw e;
+      }
+      
+      
       
       if (!user1.length || !user2.length) {
         throw new Error(`Usuarios no encontrados: ${sortedParticipants.join(', ')}`);

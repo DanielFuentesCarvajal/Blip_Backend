@@ -1,4 +1,4 @@
-const promisePool = require('../config/db');
+const { promisePool } = require('../config/db');
 
 // Obtener todos los usuarios
 const getAllUsers = async () => {
