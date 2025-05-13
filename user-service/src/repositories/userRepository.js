@@ -1,8 +1,10 @@
-const promisePool = require('../config/db');
+const { promisePool } = require('../config/db');
 
 // Obtener todos los usuarios
 const getAllUsers = async () => {
-  const [rows] = await promisePool.query('SELECT * FROM users');
+  const [rows] = await promisePool.query(
+    'SELECT idusers, nickname, mail FROM users' // Solo estos campos
+  );
   return rows;
 };
 

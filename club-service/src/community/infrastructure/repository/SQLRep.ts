@@ -172,4 +172,48 @@ public joinCommunity = async (userId: number, communityId: number): Promise<void
     }
 }
 
+private readonly queryExitCommunity = 'CALL ExitCommunity(?, ?)';
+private readonly queryGetAllCommunitiesByUserId = 'CALL GetAllCommunitiesByUserId(?)';
+private readonly queryUserInCommunity = 'CALL UserInCommunity(?, ?)';
+
+// salir de comunidad
+public exitCommunity = async (user_id: number, community_id: number): Promise<void> => {
+    try {
+        const connectionDB = await connectToDatabase();
+        await connectionDB.execute(this.queryExitCommunity, [user_id, community_id]);
+        await connectionDB.end();
+        console.log(`Usuario ${user_id} salió de la comunidad ${community_id}`);
+    } catch (error) {
+        console.error('Error al salir de la comunidad:', error);
+        throw error;
+    }
+}
+
+// obtener todas las comunidades donde está el usuario
+public getAllCommunitiesByUserId = async (user_id: number): Promise<any[]> => {
+    try {
+        const connectionDB = await connectToDatabase();
+        const [rows]: any = await connectionDB.execute(this.queryGetAllCommunitiesByUserId, [user_id]);
+        await connectionDB.end();
+        return rows[0] || [];  // recuerda que cuando es CALL, rows[0] suele traer la data
+    } catch (error) {
+        console.error('Error al obtener comunidades por usuario:', error);
+        return [];
+    }
+}
+
+// verificar si el usuario está en la comunidad
+public userInCommunity = async (user_id: number, community_id: number): Promise<any> => {
+    try {
+        const connectionDB = await connectToDatabase();
+        const [rows]: any = await connectionDB.execute(this.queryUserInCommunity, [user_id, community_id]);
+        await connectionDB.end();
+        return rows[0] || null;
+    } catch (error) {
+        console.error('Error al verificar si el usuario está en la comunidad:', error);
+        return null;
+    }
+}
+
+
 }
